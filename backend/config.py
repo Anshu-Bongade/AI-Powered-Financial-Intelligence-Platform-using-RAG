@@ -14,7 +14,16 @@ CACHE_DIR = BASE_DIR / "financial_cache"
 for directory in [DATA_DIR, MARKDOWN_DIR, CHUNKS_DIR, CHROMA_DIR, CACHE_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+gemini_key = os.getenv("GEMINI_API_KEY", "")
+if not gemini_key:
+    try:
+        import streamlit as st
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            gemini_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
+
+GEMINI_API_KEY = gemini_key
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 DEFAULT_COLLECTION_NAME = "apple_documents"
