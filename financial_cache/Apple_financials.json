@@ -1,0 +1,269 @@
+{
+  "company_name": "Apple Inc.",
+  "document_title": "CONSOLIDATED STATEMENTS OF OPERATIONS, BALANCE SHEETS, AND CASH FLOWS",
+  "fiscal_years": [
+    2024,
+    2023,
+    2022
+  ],
+  "currency": "USD",
+  "unit": "millions",
+  "income_statement": {
+    "total_revenue": {
+      "2024": 391035,
+      "2023": 383285,
+      "2022": 394328
+    },
+    "products_revenue": {
+      "2024": 294866,
+      "2023": 298085,
+      "2022": 316199
+    },
+    "services_revenue": {
+      "2024": 96169,
+      "2023": 85200,
+      "2022": 78129
+    },
+    "cost_of_sales": {
+      "2024": 210352,
+      "2023": 214137,
+      "2022": 223546
+    },
+    "gross_margin": {
+      "2024": 180683,
+      "2023": 169148,
+      "2022": 170782
+    },
+    "research_and_development": {
+      "2024": 31370,
+      "2023": 29915,
+      "2022": 26251
+    },
+    "selling_general_admin": {
+      "2024": 26097,
+      "2023": 24932,
+      "2022": 25094
+    },
+    "total_operating_expenses": {
+      "2024": 57467,
+      "2023": 54847,
+      "2022": 51345
+    },
+    "operating_income": {
+      "2024": 123216,
+      "2023": 114301,
+      "2022": 119437
+    },
+    "tax_provision": {
+      "2024": 29749,
+      "2023": 16741,
+      "2022": 19300
+    },
+    "net_income": {
+      "2024": 93736,
+      "2023": 96995,
+      "2022": 99803
+    },
+    "diluted_eps": {
+      "2024": 6.08,
+      "2023": 6.13,
+      "2022": 6.11
+    },
+    "basic_eps": {
+      "2024": 6.11,
+      "2023": 6.16,
+      "2022": 6.15
+    },
+    "weighted_average_shares_diluted": {
+      "2024": 15408095,
+      "2023": 15812547,
+      "2022": 16325819
+    }
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": {
+      "2024": 29943,
+      "2023": 29965
+    },
+    "marketable_securities_current": {
+      "2024": 35228,
+      "2023": 31590
+    },
+    "accounts_receivable": {
+      "2024": 33410,
+      "2023": 29508
+    },
+    "inventories": {
+      "2024": 7286,
+      "2023": 6331
+    },
+    "total_current_assets": {
+      "2024": 152987,
+      "2023": 143566
+    },
+    "property_plant_equipment": {
+      "2024": 45680,
+      "2023": 43715
+    },
+    "total_non_current_assets": {
+      "2024": 211993,
+      "2023": 209017
+    },
+    "total_assets": {
+      "2024": 364980,
+      "2023": 352583
+    },
+    "accounts_payable": {
+      "2024": 68960,
+      "2023": 62611
+    },
+    "commercial_paper": {
+      "2024": 9967,
+      "2023": 5985
+    },
+    "short_term_debt": {
+      "2024": null,
+      "2023": null
+    },
+    "term_debt_current": {
+      "2024": 10912,
+      "2023": 9822
+    },
+    "total_current_liabilities": {
+      "2024": 176392,
+      "2023": 145308
+    },
+    "term_debt_non_current": {
+      "2024": 85750,
+      "2023": 95281
+    },
+    "long_term_debt": {
+      "2024": null,
+      "2023": null
+    },
+    "total_non_current_liabilities": {
+      "2024": 131638,
+      "2023": 145129
+    },
+    "total_liabilities": {
+      "2024": 308030,
+      "2023": 290437
+    },
+    "shareholders_equity": {
+      "2024": 56950,
+      "2023": 62146
+    },
+    "total_liabilities_and_equity": {
+      "2024": 364980,
+      "2023": 352583
+    }
+  },
+  "cash_flows": {
+    "operating_cash_flow": {
+      "2024": 118254,
+      "2023": 110543,
+      "2022": 122151
+    },
+    "capex": {
+      "2024": -9447,
+      "2023": -10959,
+      "2022": -10708
+    },
+    "investing_cash_flow": {
+      "2024": 2935,
+      "2023": 3705,
+      "2022": -22354
+    },
+    "share_repurchases": {
+      "2024": -94949,
+      "2023": -77550,
+      "2022": -89402
+    },
+    "dividends_paid": {
+      "2024": -15234,
+      "2023": -15025,
+      "2022": -14841
+    },
+    "financing_cash_flow": {
+      "2024": -121983,
+      "2023": -108488,
+      "2022": -110749
+    }
+  },
+  "source_citations": {
+    "income_statement": "#### **CONSOLIDATED STATEMENTS OF OPERATIONS**",
+    "balance_sheet": "#### **CONSOLIDATED BALANCE SHEETS**",
+    "cash_flows": "#### **CONSOLIDATED STATEMENTS OF CASH FLOWS**"
+  },
+  "provenance": {
+    "total_revenue_2024": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2024": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_liabilities_2024": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2024": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_liabilities_2023": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2023": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "free_cash_flow_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2022": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    }
+  },
+  "source_document": "Apple.pdf"
+}

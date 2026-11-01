@@ -1,0 +1,269 @@
+{
+  "company_name": "NVIDIA CORPORATION AND SUBSIDIARIES",
+  "document_title": "CONSOLIDATED FINANCIAL STATEMENTS",
+  "fiscal_years": [
+    2022,
+    2021,
+    2020
+  ],
+  "currency": "USD",
+  "unit": "millions",
+  "income_statement": {
+    "total_revenue": {
+      "2022": 26914,
+      "2021": 16675,
+      "2020": 10918
+    },
+    "products_revenue": {
+      "2022": null,
+      "2021": null,
+      "2020": null
+    },
+    "services_revenue": {
+      "2022": null,
+      "2021": null,
+      "2020": null
+    },
+    "cost_of_sales": {
+      "2022": 9439,
+      "2021": 6279,
+      "2020": 4150
+    },
+    "gross_margin": {
+      "2022": 17475,
+      "2021": 10396,
+      "2020": 6768
+    },
+    "research_and_development": {
+      "2022": 5268,
+      "2021": 3924,
+      "2020": 2829
+    },
+    "selling_general_admin": {
+      "2022": 2166,
+      "2021": 1940,
+      "2020": 1093
+    },
+    "total_operating_expenses": {
+      "2022": 7434,
+      "2021": 5864,
+      "2020": 3922
+    },
+    "operating_income": {
+      "2022": 10041,
+      "2021": 4532,
+      "2020": 2846
+    },
+    "tax_provision": {
+      "2022": 189,
+      "2021": 77,
+      "2020": 174
+    },
+    "net_income": {
+      "2022": 9752,
+      "2021": 4332,
+      "2020": 2796
+    },
+    "diluted_eps": {
+      "2022": 3.85,
+      "2021": 1.73,
+      "2020": 1.13
+    },
+    "basic_eps": {
+      "2022": 3.91,
+      "2021": 1.76,
+      "2020": 1.15
+    },
+    "weighted_average_shares_diluted": {
+      "2022": 2535,
+      "2021": 2510,
+      "2020": 2472
+    }
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": {
+      "2022": 1990,
+      "2021": 847
+    },
+    "marketable_securities_current": {
+      "2022": 19218,
+      "2021": 10714
+    },
+    "accounts_receivable": {
+      "2022": 4650,
+      "2021": 2429
+    },
+    "inventories": {
+      "2022": 2605,
+      "2021": 1826
+    },
+    "total_current_assets": {
+      "2022": 28829,
+      "2021": 16055
+    },
+    "property_plant_equipment": {
+      "2022": 2778,
+      "2021": 2149
+    },
+    "total_non_current_assets": {
+      "2022": null,
+      "2021": null
+    },
+    "total_assets": {
+      "2022": 44187,
+      "2021": 28791
+    },
+    "accounts_payable": {
+      "2022": 1783,
+      "2021": 1149
+    },
+    "commercial_paper": {
+      "2022": null,
+      "2021": null
+    },
+    "short_term_debt": {
+      "2022": null,
+      "2021": 999
+    },
+    "term_debt_current": {
+      "2022": null,
+      "2021": null
+    },
+    "total_current_liabilities": {
+      "2022": 4335,
+      "2021": 3925
+    },
+    "term_debt_non_current": {
+      "2022": null,
+      "2021": null
+    },
+    "long_term_debt": {
+      "2022": 10946,
+      "2021": 5964
+    },
+    "total_non_current_liabilities": {
+      "2022": null,
+      "2021": null
+    },
+    "total_liabilities": {
+      "2022": 17575,
+      "2021": 11898
+    },
+    "shareholders_equity": {
+      "2022": 26612,
+      "2021": 16893
+    },
+    "total_liabilities_and_equity": {
+      "2022": 44187,
+      "2021": 28791
+    }
+  },
+  "cash_flows": {
+    "operating_cash_flow": {
+      "2022": 9108,
+      "2021": 5822,
+      "2020": 4761
+    },
+    "capex": {
+      "2022": -976,
+      "2021": -1128,
+      "2020": -489
+    },
+    "investing_cash_flow": {
+      "2022": -9830,
+      "2021": -19675,
+      "2020": 6145
+    },
+    "share_repurchases": {
+      "2022": null,
+      "2021": null,
+      "2020": null
+    },
+    "dividends_paid": {
+      "2022": -399,
+      "2021": -395,
+      "2020": -390
+    },
+    "financing_cash_flow": {
+      "2022": 1865,
+      "2021": 3804,
+      "2020": -792
+    }
+  },
+  "source_citations": {
+    "income_statement": "### **NVIDIA CORPORATION AND SUBSIDIARIES CONSOLIDATED STATEMENTS OF INCOME (In millions, except per share data)**",
+    "balance_sheet": "### **NVIDIA CORPORATION AND SUBSIDIARIES CONSOLIDATED BALANCE SHEETS (In millions, except par value)**",
+    "cash_flows": "### **NVIDIA CORPORATION AND SUBSIDIARIES CONSOLIDATED STATEMENTS OF CASH FLOWS (In millions)**"
+  },
+  "provenance": {
+    "total_revenue_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2021": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2021": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2020": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2020": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_liabilities_2022": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2022": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_liabilities_2021": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2021": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "free_cash_flow_2022": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2021": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2020": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    }
+  },
+  "source_document": "nvda-20220130.pdf"
+}

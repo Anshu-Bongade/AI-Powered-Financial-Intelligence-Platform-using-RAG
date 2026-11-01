@@ -1,0 +1,269 @@
+{
+  "company_name": "Tesla, Inc.",
+  "document_title": "Form 10-K Consolidated Financial Statements",
+  "fiscal_years": [
+    2024,
+    2023,
+    2022
+  ],
+  "currency": "USD",
+  "unit": "millions",
+  "income_statement": {
+    "total_revenue": {
+      "2024": 97690,
+      "2023": 96773,
+      "2022": 81462
+    },
+    "products_revenue": {
+      "2024": 87156,
+      "2023": 88454,
+      "2022": 75371
+    },
+    "services_revenue": {
+      "2024": 10534,
+      "2023": 8319,
+      "2022": 6091
+    },
+    "cost_of_sales": {
+      "2024": 80240,
+      "2023": 79113,
+      "2022": 60609
+    },
+    "gross_margin": {
+      "2024": 17450,
+      "2023": 17660,
+      "2022": 20853
+    },
+    "research_and_development": {
+      "2024": 4540,
+      "2023": 3969,
+      "2022": 3075
+    },
+    "selling_general_admin": {
+      "2024": 5150,
+      "2023": 4800,
+      "2022": 3946
+    },
+    "total_operating_expenses": {
+      "2024": 10374,
+      "2023": 8769,
+      "2022": 7197
+    },
+    "operating_income": {
+      "2024": 7076,
+      "2023": 8891,
+      "2022": 13656
+    },
+    "tax_provision": {
+      "2024": 1837,
+      "2023": -5001,
+      "2022": 1132
+    },
+    "net_income": {
+      "2024": 7153,
+      "2023": 14974,
+      "2022": 12587
+    },
+    "diluted_eps": {
+      "2024": 2.04,
+      "2023": 4.3,
+      "2022": 3.62
+    },
+    "basic_eps": {
+      "2024": 2.23,
+      "2023": 4.73,
+      "2022": 4.02
+    },
+    "weighted_average_shares_diluted": {
+      "2024": 3498,
+      "2023": 3485,
+      "2022": 3475
+    }
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": {
+      "2024": 16139,
+      "2023": 16398
+    },
+    "marketable_securities_current": {
+      "2024": 20424,
+      "2023": 12696
+    },
+    "accounts_receivable": {
+      "2024": 4418,
+      "2023": 3508
+    },
+    "inventories": {
+      "2024": 12017,
+      "2023": 13626
+    },
+    "total_current_assets": {
+      "2024": 58360,
+      "2023": 49616
+    },
+    "property_plant_equipment": {
+      "2024": 35836,
+      "2023": 29725
+    },
+    "total_non_current_assets": {
+      "2024": 63710,
+      "2023": 57002
+    },
+    "total_assets": {
+      "2024": 122070,
+      "2023": 106618
+    },
+    "accounts_payable": {
+      "2024": 12474,
+      "2023": 14431
+    },
+    "commercial_paper": {
+      "2024": null,
+      "2023": null
+    },
+    "short_term_debt": {
+      "2024": 2456,
+      "2023": 2373
+    },
+    "term_debt_current": {
+      "2024": null,
+      "2023": null
+    },
+    "total_current_liabilities": {
+      "2024": 28821,
+      "2023": 28748
+    },
+    "term_debt_non_current": {
+      "2024": 5757,
+      "2023": 2857
+    },
+    "long_term_debt": {
+      "2024": 5757,
+      "2023": 2857
+    },
+    "total_non_current_liabilities": {
+      "2024": 19506,
+      "2023": 14261
+    },
+    "total_liabilities": {
+      "2024": 48390,
+      "2023": 43009
+    },
+    "shareholders_equity": {
+      "2024": 72913,
+      "2023": 62634
+    },
+    "total_liabilities_and_equity": {
+      "2024": 122070,
+      "2023": 106618
+    }
+  },
+  "cash_flows": {
+    "operating_cash_flow": {
+      "2024": 14923,
+      "2023": 13256,
+      "2022": 14724
+    },
+    "capex": {
+      "2024": -11342,
+      "2023": -8899,
+      "2022": -7163
+    },
+    "investing_cash_flow": {
+      "2024": -18787,
+      "2023": -15584,
+      "2022": -11973
+    },
+    "share_repurchases": {
+      "2024": null,
+      "2023": null,
+      "2022": null
+    },
+    "dividends_paid": {
+      "2024": null,
+      "2023": null,
+      "2022": null
+    },
+    "financing_cash_flow": {
+      "2024": 3853,
+      "2023": 2589,
+      "2022": -3527
+    }
+  },
+  "source_citations": {
+    "income_statement": "### **Consolidated Statements of Operations**",
+    "balance_sheet": "### **Consolidated Balance Sheets**",
+    "cash_flows": "### **Consolidated Statements of Cash Flows (in millions)**"
+  },
+  "provenance": {
+    "total_revenue_2024": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2024": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_revenue_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "total_liabilities_2024": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2024": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_liabilities_2023": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_assets_2023": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "free_cash_flow_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2022": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    }
+  },
+  "source_document": "2024_Tesla.pdf"
+}

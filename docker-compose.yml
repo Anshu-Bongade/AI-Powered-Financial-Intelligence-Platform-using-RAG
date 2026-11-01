@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  finsight-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: finsight-ai:latest
+    container_name: finsight_ai_service
+    ports:
+      - "8000:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      - PORT=8000
+    volumes:
+      # Optional: persist uploads, caches and vector embeddings across container restarts
+      - ./data:/app/data
+      - ./financial_cache:/app/financial_cache
+      - ./chroma_db:/app/chroma_db
+      - ./mark_down:/app/mark_down
+    restart: unless-stopped

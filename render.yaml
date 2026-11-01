@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: finsight-ai
+    runtime: docker
+    plan: starter
+    region: oregon
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: PORT
+        value: 8000
+    healthCheckPath: /api/health
+    disk:
+      name: finsight-data
+      mountPath: /app/data
+      sizeGB: 5

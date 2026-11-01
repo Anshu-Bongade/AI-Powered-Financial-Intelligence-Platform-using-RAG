@@ -1,0 +1,292 @@
+{
+  "company_name": "Walmart",
+  "document_title": "Consolidated Financial Statements",
+  "fiscal_years": [
+    2025,
+    2024,
+    2023
+  ],
+  "currency": "USD",
+  "unit": "millions",
+  "income_statement": {
+    "total_revenue": {
+      "2025": 680985,
+      "2024": 648125,
+      "2023": 611289
+    },
+    "products_revenue": {
+      "2025": null,
+      "2024": null,
+      "2023": null
+    },
+    "services_revenue": {
+      "2025": null,
+      "2024": null,
+      "2023": null
+    },
+    "cost_of_sales": {
+      "2025": 511753,
+      "2024": 490142,
+      "2023": 463721
+    },
+    "gross_margin": {
+      "2025": 169232,
+      "2024": 157983,
+      "2023": 147568
+    },
+    "research_and_development": {
+      "2025": null,
+      "2024": null,
+      "2023": null
+    },
+    "selling_general_admin": {
+      "2025": 139884,
+      "2024": 130971,
+      "2023": 127140
+    },
+    "total_operating_expenses": {
+      "2025": 139884,
+      "2024": 130971,
+      "2023": 127140
+    },
+    "operating_income": {
+      "2025": 29348,
+      "2024": 27012,
+      "2023": 20428
+    },
+    "tax_provision": {
+      "2025": 6152,
+      "2024": 5578,
+      "2023": 5724
+    },
+    "net_income": {
+      "2025": 20157,
+      "2024": 16270,
+      "2023": 11292
+    },
+    "diluted_eps": {
+      "2025": 2.41,
+      "2024": 1.91,
+      "2023": 1.42
+    },
+    "basic_eps": {
+      "2025": 2.42,
+      "2024": 1.92,
+      "2023": 1.43
+    },
+    "weighted_average_shares_diluted": {
+      "2025": 8081,
+      "2024": 8108,
+      "2023": 8202
+    }
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": {
+      "2025": 9037,
+      "2024": 9867
+    },
+    "marketable_securities_current": {
+      "2025": null,
+      "2024": null
+    },
+    "accounts_receivable": {
+      "2025": 9975,
+      "2024": 8796
+    },
+    "inventories": {
+      "2025": 56435,
+      "2024": 54892
+    },
+    "total_current_assets": {
+      "2025": 79458,
+      "2024": 76877
+    },
+    "property_plant_equipment": {
+      "2025": 119993,
+      "2024": 110810
+    },
+    "total_non_current_assets": {
+      "2025": null,
+      "2024": null
+    },
+    "total_assets": {
+      "2025": 260823,
+      "2024": 252399
+    },
+    "accounts_payable": {
+      "2025": 58666,
+      "2024": 56812
+    },
+    "commercial_paper": {
+      "2025": null,
+      "2024": null
+    },
+    "short_term_debt": {
+      "2025": 3068,
+      "2024": 878
+    },
+    "term_debt_current": {
+      "2025": 2598,
+      "2024": 3447
+    },
+    "total_current_liabilities": {
+      "2025": 96584,
+      "2024": 92415
+    },
+    "term_debt_non_current": {
+      "2025": null,
+      "2024": null
+    },
+    "long_term_debt": {
+      "2025": 33401,
+      "2024": 36132
+    },
+    "total_non_current_liabilities": {
+      "2025": null,
+      "2024": null
+    },
+    "total_liabilities": {
+      "2025": 163402,
+      "2024": 162050
+    },
+    "shareholders_equity": {
+      "2025": 97421,
+      "2024": 90349
+    },
+    "total_liabilities_and_equity": {
+      "2025": 260823,
+      "2024": 252399
+    }
+  },
+  "cash_flows": {
+    "operating_cash_flow": {
+      "2025": 36443,
+      "2024": 35726,
+      "2023": 28841
+    },
+    "capex": {
+      "2025": -23783,
+      "2024": -20606,
+      "2023": -16857
+    },
+    "investing_cash_flow": {
+      "2025": -21379,
+      "2024": -21287,
+      "2023": -17722
+    },
+    "share_repurchases": {
+      "2025": -4494,
+      "2024": -2779,
+      "2023": -9920
+    },
+    "dividends_paid": {
+      "2025": -6688,
+      "2024": -6140,
+      "2023": -6114
+    },
+    "financing_cash_flow": {
+      "2025": -14822,
+      "2024": -13414,
+      "2023": -17039
+    }
+  },
+  "source_citations": {
+    "income_statement": "#### **Consolidated Statements of Income**",
+    "balance_sheet": "#### **Consolidated Balance Sheets**",
+    "cash_flows": "#### **Consolidated Statements of Cash Flows**"
+  },
+  "provenance": {
+    "total_revenue_2025": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2025": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_revenue - cost_of_sales",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_operating_expenses_2025": {
+      "source_type": "derived_from_verified_values",
+      "formula": "gross_margin - operating_income",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_revenue_2024": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_revenue - cost_of_sales",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_operating_expenses_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "gross_margin - operating_income",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_revenue_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_revenue - cost_of_sales",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_operating_expenses_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "gross_margin - operating_income",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_liabilities_2025": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_assets - shareholders_equity",
+      "statement": "balance_sheet",
+      "confidence": "verified_calculation"
+    },
+    "total_assets_2025": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "total_liabilities_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_assets - shareholders_equity",
+      "statement": "balance_sheet",
+      "confidence": "verified_calculation"
+    },
+    "total_assets_2024": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "free_cash_flow_2025": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2024": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    }
+  },
+  "source_document": "wmt-20250131.pdf"
+}

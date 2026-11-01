@@ -1,0 +1,245 @@
+{
+  "company_name": "Reliance, Inc.",
+  "document_title": "UNAUDITED CONSOLIDATED STATEMENTS OF INCOME, BALANCE SHEETS, AND CASH FLOWS",
+  "fiscal_years": [
+    2023,
+    2022
+  ],
+  "currency": "USD",
+  "unit": "millions",
+  "income_statement": {
+    "total_revenue": {
+      "2024": null,
+      "2023": 14805.9,
+      "2022": 17025.0
+    },
+    "products_revenue": {
+      "2024": null,
+      "2023": null,
+      "2022": null
+    },
+    "services_revenue": {
+      "2024": null,
+      "2023": null,
+      "2022": null
+    },
+    "cost_of_sales": {
+      "2024": null,
+      "2023": 10258.6,
+      "2022": 11773.7
+    },
+    "gross_margin": {
+      "2024": null,
+      "2023": 4547.3,
+      "2022": 5251.3
+    },
+    "research_and_development": {
+      "2024": null,
+      "2023": null,
+      "2022": null
+    },
+    "selling_general_admin": {
+      "2024": null,
+      "2023": 2562.4,
+      "2022": 2504.2
+    },
+    "total_operating_expenses": {
+      "2024": null,
+      "2023": 13066.4,
+      "2022": 14518.1
+    },
+    "operating_income": {
+      "2024": null,
+      "2023": 1739.5,
+      "2022": 2506.9
+    },
+    "tax_provision": {
+      "2024": null,
+      "2023": 400.6,
+      "2022": 586.2
+    },
+    "net_income": {
+      "2024": null,
+      "2023": 1340.1,
+      "2022": 1844.2
+    },
+    "diluted_eps": {
+      "2024": null,
+      "2023": 22.64,
+      "2022": 29.92
+    },
+    "basic_eps": {
+      "2024": null,
+      "2023": 22.9,
+      "2022": 30.39
+    },
+    "weighted_average_shares_diluted": {
+      "2024": null,
+      "2023": 59015.0,
+      "2022": 61495.0
+    }
+  },
+  "balance_sheet": {
+    "cash_and_equivalents": {
+      "2024": 1080.2,
+      "2023": 1173.4
+    },
+    "marketable_securities_current": {
+      "2024": null,
+      "2023": null
+    },
+    "accounts_receivable": {
+      "2024": 1472.4,
+      "2023": 1565.7
+    },
+    "inventories": {
+      "2024": 2043.2,
+      "2023": 1995.3
+    },
+    "total_current_assets": {
+      "2024": 4771.8,
+      "2023": 4886.6
+    },
+    "property_plant_equipment": {
+      "2024": 2248.4,
+      "2023": 1974.6
+    },
+    "total_non_current_assets": {
+      "2024": null,
+      "2023": null
+    },
+    "total_assets": {
+      "2024": 10480.3,
+      "2023": 10329.9
+    },
+    "accounts_payable": {
+      "2024": 410.3,
+      "2023": 412.4
+    },
+    "commercial_paper": {
+      "2024": null,
+      "2023": null
+    },
+    "short_term_debt": {
+      "2024": 0.3,
+      "2023": 508.2
+    },
+    "term_debt_current": {
+      "2024": null,
+      "2023": null
+    },
+    "total_current_liabilities": {
+      "2024": 843.6,
+      "2023": 1375.3
+    },
+    "term_debt_non_current": {
+      "2024": null,
+      "2023": null
+    },
+    "long_term_debt": {
+      "2024": 1141.9,
+      "2023": 1139.4
+    },
+    "total_non_current_liabilities": {
+      "2024": null,
+      "2023": null
+    },
+    "total_liabilities": {
+      "2024": null,
+      "2023": 3242.5
+    },
+    "shareholders_equity": {
+      "2024": 7722.3,
+      "2023": 7087.4
+    },
+    "total_liabilities_and_equity": {
+      "2024": 10480.3,
+      "2023": 10329.9
+    }
+  },
+  "cash_flows": {
+    "operating_cash_flow": {
+      "2024": null,
+      "2023": 1671.3,
+      "2022": 2118.6
+    },
+    "capex": {
+      "2024": null,
+      "2023": -468.8,
+      "2022": -341.8
+    },
+    "investing_cash_flow": {
+      "2024": null,
+      "2023": -483.9,
+      "2022": -348.5
+    },
+    "share_repurchases": {
+      "2024": null,
+      "2023": -479.5,
+      "2022": -630.3
+    },
+    "dividends_paid": {
+      "2024": null,
+      "2023": -238.1,
+      "2022": -217.1
+    },
+    "financing_cash_flow": {
+      "2024": null,
+      "2023": -1282.3,
+      "2022": -892.6
+    }
+  },
+  "source_citations": {
+    "income_statement": "# **UNAUDITED CONSOLIDATED STATEMENTS OF INCOME**",
+    "balance_sheet": "# **RELIANCE, INC. UNAUDITED CONSOLIDATED BALANCE SHEETS**",
+    "cash_flows": "# **RELIANCE, INC. UNAUDITED CONSOLIDATED STATEMENTS OF CASH FLOWS**"
+  },
+  "provenance": {
+    "total_revenue_2023": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_revenue - cost_of_sales",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_revenue_2022": {
+      "source_type": "direct_extraction",
+      "statement": "income_statement",
+      "confidence": "audited"
+    },
+    "gross_margin_2022": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_revenue - cost_of_sales",
+      "statement": "income_statement",
+      "confidence": "verified_calculation"
+    },
+    "total_liabilities_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "total_assets - shareholders_equity",
+      "statement": "balance_sheet",
+      "confidence": "verified_calculation"
+    },
+    "total_assets_2023": {
+      "source_type": "direct_extraction",
+      "statement": "balance_sheet",
+      "confidence": "audited"
+    },
+    "free_cash_flow_2023": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    },
+    "free_cash_flow_2022": {
+      "source_type": "derived_from_verified_values",
+      "formula": "operating_cash_flow - |capex|",
+      "statement": "cash_flows",
+      "confidence": "verified_calculation"
+    }
+  },
+  "source_document": "Reliance.pdf"
+}
