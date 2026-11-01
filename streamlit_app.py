@@ -40,91 +40,155 @@ st.set_page_config(
 # Custom High-Contrast Dark Financial Theme CSS
 st.markdown("""
 <style>
-    /* Global styles */
+    /* Global Background and Typography */
     .stApp {
-        background-color: #0b0f19;
-        color: #f3f4f6;
+        background: radial-gradient(circle at top right, #111827 0%, #0b0f19 50%, #050811 100%);
+        color: #f1f5f9;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
-    /* Metrics and cards */
-    div[data-testid="stMetric"] {
-        background-color: #111827;
-        border: 1px solid #1f2937;
-        padding: 16px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    }
-    div[data-testid="stMetric"]:hover {
-        border-color: #3b82f6;
-    }
-    div[data-testid="stMetricLabel"] {
-        color: #9ca3af !important;
-        font-size: 0.85rem !important;
-        font-weight: 600 !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    div[data-testid="stMetricValue"] {
-        color: #f9fafb !important;
-        font-size: 1.65rem !important;
-        font-weight: 700 !important;
-    }
-    
-    /* Header badges */
+    /* Header Badges */
     .sec-badge {
         display: inline-flex;
         align-items: center;
-        background-color: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.4);
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.35);
         color: #34d399;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 9999px;
-        font-size: 0.78rem;
+        font-size: 0.8rem;
         font-weight: 600;
-        margin-right: 8px;
+        letter-spacing: 0.02em;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.1);
     }
     .timing-badge {
         display: inline-flex;
         align-items: center;
-        background-color: rgba(59, 130, 246, 0.15);
-        border: 1px solid rgba(59, 130, 246, 0.4);
+        gap: 6px;
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.35);
         color: #60a5fa;
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 9999px;
-        font-size: 0.78rem;
+        font-size: 0.8rem;
         font-weight: 600;
-    }
-    .citation-box {
-        background-color: #111827;
-        border-left: 3px solid #3b82f6;
-        padding: 12px 16px;
-        border-radius: 0 8px 8px 0;
-        margin-bottom: 12px;
-        font-size: 0.88rem;
+        letter-spacing: 0.02em;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.1);
     }
     
-    /* Tabs styling */
+    /* Executive KPI Cards */
+    .kpi-container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+    @media (max-width: 1200px) {
+        .kpi-container { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 768px) {
+        .kpi-container { grid-template-columns: repeat(2, 1fr); }
+    }
+    .kpi-card {
+        background: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 12px;
+        padding: 18px 16px;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: #38bdf8;
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.15);
+    }
+    .kpi-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+    }
+    .kpi-card.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .kpi-card.emerald::before { background: linear-gradient(90deg, #10b981, #34d399); }
+    .kpi-card.purple::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+    .kpi-card.cyan::before { background: linear-gradient(90deg, #06b6d4, #38bdf8); }
+    .kpi-card.amber::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .kpi-card.rose::before { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+
+    .kpi-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .kpi-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+    .kpi-value {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #f8fafc;
+        line-height: 1.2;
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
+    }
+    .kpi-delta {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 6px;
+        padding: 2px 8px;
+    }
+    .kpi-delta.pos {
+        background: rgba(16, 185, 129, 0.15);
+        color: #34d399;
+    }
+    .kpi-delta.neg {
+        background: rgba(244, 63, 94, 0.15);
+        color: #fb7185;
+    }
+    .kpi-delta.neutral {
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+    }
+
+    /* Tabs Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
-        border-bottom: 1px solid #1f2937;
-        padding-bottom: 4px;
+        background: #0f172a;
+        border-radius: 10px;
+        padding: 6px;
+        border: 1px solid #1e293b;
     }
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px 8px 0 0;
-        padding: 10px 20px;
+        border-radius: 8px;
+        padding: 8px 18px;
         font-weight: 600;
-        color: #9ca3af;
+        color: #94a3b8;
+        border: none !important;
+        font-size: 0.88rem;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #1f2937 !important;
-        color: #60a5fa !important;
-        border-bottom: 2px solid #3b82f6 !important;
+        background-color: #1e293b !important;
+        color: #38bdf8 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     
-    /* Sidebar styling */
-    section[data-testid="stSidebar"] {
-        background-color: #0d121f;
-        border-right: 1px solid #1f2937;
+    /* Tables Styling */
+    div[data-testid="stDataFrame"] {
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -182,8 +246,20 @@ def get_available_documents() -> List[Dict[str, Any]]:
 
 
 def load_company_analytics(doc_filename: str) -> Optional[Dict[str, Any]]:
-    """Loads analytics payload from cache or extracts on-the-fly."""
+    """Loads analytics payload from disk cache directly, or extracts from markdown/PDF if missing."""
     stem = Path(doc_filename).stem
+    cache_path = CACHE_DIR / f"{stem}_financials.json"
+    
+    # 1. Fast path: Direct verified cache hit
+    if cache_path.exists():
+        try:
+            raw_data = json.loads(cache_path.read_text(encoding="utf-8"))
+            if raw_data.get("income_statement"):
+                return FinancialAnalytics.calculate_analytics(raw_data)
+        except Exception:
+            pass
+
+    # 2. Markdown or PDF extraction fallback
     md_path = MARKDOWN_DIR / f"{stem}.md"
     pdf_path = DATA_DIR / doc_filename
 
@@ -196,8 +272,7 @@ def load_company_analytics(doc_filename: str) -> Optional[Dict[str, Any]]:
 
     try:
         raw_data = financial_extractor.extract_from_markdown(md_path, doc_filename, force_refresh=False)
-        analytics = FinancialAnalytics.calculate_analytics(raw_data)
-        return analytics
+        return FinancialAnalytics.calculate_analytics(raw_data)
     except Exception as e:
         st.error(f"Error analyzing {doc_filename}: {e}")
         return None
@@ -485,9 +560,6 @@ if selected_view == "📊 Executive Financial Dashboard":
             return None
         return f"{val:+.1f}%"
 
-    # Top KPI Metrics Row 1 with Robust Fallbacks
-    mcol1, mcol2, mcol3, mcol4, mcol5, mcol6 = st.columns(6)
-
     # 1. Revenue
     rev_val = kpis.get("revenue", {}).get("value")
     if rev_val is None:
@@ -495,24 +567,12 @@ if selected_view == "📊 Executive Financial Dashboard":
     if rev_val is None:
         rev_val = inc_data.get("total_revenue", {}).get(latest_year)
     rev_delta = kpis.get("revenue", {}).get("yoy_growth") or yoy_growth.get("revenue", {}).get(latest_year)
-    with mcol1:
-        st.metric(
-            label="Total Revenue",
-            value=fmt_currency(rev_val),
-            delta=fmt_pct(rev_delta)
-        )
 
     # 2. Net Income
     ni_val = kpis.get("net_income", {}).get("value")
     if ni_val is None:
         ni_val = inc_data.get("net_income", {}).get(latest_year)
     ni_delta = kpis.get("net_income", {}).get("yoy_growth") or yoy_growth.get("net_income", {}).get(latest_year)
-    with mcol2:
-        st.metric(
-            label="Net Income",
-            value=fmt_currency(ni_val),
-            delta=fmt_pct(ni_delta)
-        )
 
     # 3. Gross Margin %
     gm_val = kpis.get("gross_margin_pct", {}).get("value")
@@ -523,12 +583,6 @@ if selected_view == "📊 Executive Financial Dashboard":
         if gm_amt is not None:
             gm_val = round((gm_amt / rev_val) * 100, 2)
     gm_delta = yoy_growth.get("gross_margin", {}).get(latest_year)
-    with mcol3:
-        st.metric(
-            label="Gross Margin %",
-            value=f"{gm_val:.1f}%" if gm_val is not None else "N/A",
-            delta=fmt_pct(gm_delta)
-        )
 
     # 4. Operating Margin %
     om_val = kpis.get("operating_margin_pct", {}).get("value")
@@ -545,12 +599,6 @@ if selected_view == "📊 Executive Financial Dashboard":
         if oi_amt is not None:
             om_val = round((oi_amt / rev_val) * 100, 2)
     om_delta = yoy_growth.get("operating_income", {}).get(latest_year)
-    with mcol4:
-        st.metric(
-            label="Operating Margin %",
-            value=f"{om_val:.1f}%" if om_val is not None else "N/A",
-            delta=fmt_pct(om_delta)
-        )
 
     # 5. Free Cash Flow
     fcf_val = kpis.get("free_cash_flow", {}).get("value")
@@ -558,31 +606,74 @@ if selected_view == "📊 Executive Financial Dashboard":
         fcf_val = active_analytics.get("free_cash_flow", {}).get(latest_year)
     if fcf_val is None:
         ocf_amt = cf_data.get("operating_cash_flow", {}).get(latest_year)
+        if ocf_amt is None:
+            for alt_k in ["cash_from_operations", "net_cash_from_operating_activities"]:
+                val_k = cf_data.get(alt_k, {}).get(latest_year)
+                if val_k is not None:
+                    ocf_amt = val_k
+                    break
         capex_amt = cf_data.get("capex", {}).get(latest_year)
-        if ocf_amt is not None and capex_amt is not None:
-            fcf_val = round(ocf_amt - abs(capex_amt), 2)
+        if capex_amt is None:
+            for alt_k in ["capital_expenditures", "additions_to_property_plant_equipment"]:
+                val_k = cf_data.get(alt_k, {}).get(latest_year)
+                if val_k is not None:
+                    capex_amt = val_k
+                    break
+        if ocf_amt is not None:
+            fcf_val = round(ocf_amt - abs(capex_amt or 0), 2)
     fcf_delta = kpis.get("free_cash_flow", {}).get("yoy_growth") or yoy_growth.get("free_cash_flow", {}).get(latest_year)
-    with mcol5:
-        st.metric(
-            label="Free Cash Flow",
-            value=fmt_currency(fcf_val),
-            delta=fmt_pct(fcf_delta)
-        )
 
     # 6. Return on Equity (ROE) & Current Ratio
     roe_val = p_ratios.get("return_on_equity_roe_pct")
-    if roe_val is None and ni_val and bal_data.get("shareholders_equity", {}).get(latest_year):
+    if roe_val is None and ni_val:
         eq_amt = bal_data.get("shareholders_equity", {}).get(latest_year)
+        if eq_amt is None:
+            for alt_k in ["total_equity", "stockholders_equity", "total_shareholders_equity"]:
+                val_k = bal_data.get(alt_k, {}).get(latest_year)
+                if val_k is not None:
+                    eq_amt = val_k
+                    break
         if eq_amt and eq_amt != 0:
             roe_val = round((ni_val / eq_amt) * 100, 2)
     cr_val = s_ratios.get("current_ratio")
-    with mcol6:
-        st.metric(
-            label="Return on Equity (ROE)",
-            value=f"{roe_val:.1f}%" if roe_val is not None else (f"{cr_val:.2f}x" if cr_val else "N/A"),
-            delta="Current Ratio: " + (f"{cr_val:.2f}x" if cr_val else "N/A") if roe_val is not None else None,
-            delta_color="off"
-        )
+
+    # Render Executive KPI Grid with Custom HTML/CSS
+    def _render_kpi_card(title, value, delta_str, color="blue", sub_note=""):
+        delta_class = "neutral"
+        delta_icon = ""
+        if delta_str and ("+" in delta_str):
+            delta_class = "pos"
+            delta_icon = "▲ "
+        elif delta_str and ("-" in delta_str):
+            delta_class = "neg"
+            delta_icon = "▼ "
+        
+        badge_html = f'<span class="kpi-delta {delta_class}">{delta_icon}{delta_str} YoY</span>' if delta_str and delta_str != "N/A" else ''
+        sub_html = f'<span style="font-size: 0.72rem; color: #94a3b8; margin-left: 6px;">{sub_note}</span>' if sub_note else ''
+        return f"""
+        <div class="kpi-card {color}">
+            <div class="kpi-header">
+                <span class="kpi-title">{title}</span>
+            </div>
+            <div class="kpi-value">{value}</div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                {badge_html}
+                {sub_html}
+            </div>
+        </div>
+        """
+
+    kpi_grid_html = f"""
+    <div class="kpi-container">
+        {_render_kpi_card("Total Revenue", fmt_currency(rev_val), fmt_pct(rev_delta), "blue")}
+        {_render_kpi_card("Net Income", fmt_currency(ni_val), fmt_pct(ni_delta), "emerald")}
+        {_render_kpi_card("Gross Margin %", f"{gm_val:.1f}%" if gm_val is not None else "N/A", fmt_pct(gm_delta), "purple")}
+        {_render_kpi_card("Operating Margin %", f"{om_val:.1f}%" if om_val is not None else "N/A", fmt_pct(om_delta), "cyan")}
+        {_render_kpi_card("Free Cash Flow", fmt_currency(fcf_val), fmt_pct(fcf_delta), "amber")}
+        {_render_kpi_card("Return on Equity", f"{roe_val:.1f}%" if roe_val is not None else (f"{cr_val:.2f}x" if cr_val else "N/A"), "", "rose", sub_note=f"CR: {cr_val:.2f}x" if cr_val else "")}
+    </div>
+    """
+    st.markdown(kpi_grid_html, unsafe_allow_html=True)
 
     st.markdown("<div style='height: 24px;'></div>", unsafe_allow_html=True)
 
@@ -614,15 +705,15 @@ if selected_view == "📊 Executive Financial Dashboard":
                 textposition="auto"
             ))
             fig_rev.update_layout(
-                title=dict(text="Revenue & Net Income Trajectory (YoY)", font=dict(color="#f3f4f6", size=15)),
+                title=dict(text="<b>Revenue & Net Income Trajectory (YoY)</b>", font=dict(color="#f8fafc", size=15), x=0.01, y=0.96),
                 barmode="group",
-                plot_bgcolor="#0d121f",
-                paper_bgcolor="#111827",
-                font=dict(color="#9ca3af"),
-                yaxis=dict(title="USD (Billions)", gridcolor="#1f2937"),
-                xaxis=dict(gridcolor="#1f2937"),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                margin=dict(l=40, r=20, t=50, b=40)
+                plot_bgcolor="#0b1329",
+                paper_bgcolor="#0f172a",
+                font=dict(color="#94a3b8"),
+                yaxis=dict(title="USD (Billions)", gridcolor="#1e293b", zerolinecolor="#334155"),
+                xaxis=dict(gridcolor="#1e293b"),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(15,23,42,0.85)", font=dict(size=11, color="#cbd5e1")),
+                margin=dict(l=40, r=20, t=65, b=40)
             )
             st.plotly_chart(fig_rev, use_container_width=True)
         else:
@@ -666,14 +757,14 @@ if selected_view == "📊 Executive Financial Dashboard":
                 textposition="bottom center"
             ))
             fig_margin.update_layout(
-                title=dict(text="Operating & Profitability Margins (%)", font=dict(color="#f3f4f6", size=15)),
-                plot_bgcolor="#0d121f",
-                paper_bgcolor="#111827",
-                font=dict(color="#9ca3af"),
-                yaxis=dict(title="Margin (%)", gridcolor="#1f2937"),
-                xaxis=dict(gridcolor="#1f2937"),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                margin=dict(l=40, r=20, t=50, b=40)
+                title=dict(text="<b>Operating & Profitability Margins (%)</b>", font=dict(color="#f8fafc", size=15), x=0.01, y=0.96),
+                plot_bgcolor="#0b1329",
+                paper_bgcolor="#0f172a",
+                font=dict(color="#94a3b8"),
+                yaxis=dict(title="Margin (%)", gridcolor="#1e293b", zerolinecolor="#334155"),
+                xaxis=dict(gridcolor="#1e293b"),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(15,23,42,0.85)", font=dict(size=11, color="#cbd5e1")),
+                margin=dict(l=40, r=20, t=65, b=40)
             )
             st.plotly_chart(fig_margin, use_container_width=True)
         else:
@@ -709,15 +800,15 @@ if selected_view == "📊 Executive Financial Dashboard":
                 line=dict(color="#10b981", width=3)
             ))
             fig_cf.update_layout(
-                title=dict(text="Cash Flow Generation & Free Cash Flow ($B)", font=dict(color="#f3f4f6", size=15)),
+                title=dict(text="<b>Cash Flow Generation & Free Cash Flow ($B)</b>", font=dict(color="#f8fafc", size=15), x=0.01, y=0.96),
                 barmode="relative",
-                plot_bgcolor="#0d121f",
-                paper_bgcolor="#111827",
-                font=dict(color="#9ca3af"),
-                yaxis=dict(title="USD (Billions)", gridcolor="#1f2937"),
-                xaxis=dict(gridcolor="#1f2937"),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                margin=dict(l=40, r=20, t=50, b=40)
+                plot_bgcolor="#0b1329",
+                paper_bgcolor="#0f172a",
+                font=dict(color="#94a3b8"),
+                yaxis=dict(title="USD (Billions)", gridcolor="#1e293b", zerolinecolor="#334155"),
+                xaxis=dict(gridcolor="#1e293b"),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(15,23,42,0.85)", font=dict(size=11, color="#cbd5e1")),
+                margin=dict(l=40, r=20, t=65, b=40)
             )
             st.plotly_chart(fig_cf, use_container_width=True)
         else:
@@ -799,15 +890,15 @@ if selected_view == "📊 Executive Financial Dashboard":
                     marker_color="#10b981"
                 ))
                 fig_bs.update_layout(
-                    title=dict(text="Balance Sheet Composition ($B)", font=dict(color="#f3f4f6", size=15)),
+                    title=dict(text="<b>Balance Sheet Composition ($B)</b>", font=dict(color="#f8fafc", size=15), x=0.01, y=0.96),
                     barmode="group",
-                    plot_bgcolor="#0d121f",
-                    paper_bgcolor="#111827",
-                    font=dict(color="#9ca3af"),
-                    yaxis=dict(title="USD (Billions)", gridcolor="#1f2937"),
-                    xaxis=dict(gridcolor="#1f2937"),
-                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-                    margin=dict(l=40, r=20, t=50, b=40)
+                    plot_bgcolor="#0b1329",
+                    paper_bgcolor="#0f172a",
+                    font=dict(color="#94a3b8"),
+                    yaxis=dict(title="USD (Billions)", gridcolor="#1e293b", zerolinecolor="#334155"),
+                    xaxis=dict(gridcolor="#1e293b"),
+                    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(15,23,42,0.85)", font=dict(size=11, color="#cbd5e1")),
+                    margin=dict(l=40, r=20, t=65, b=40)
                 )
                 st.plotly_chart(fig_bs, use_container_width=True)
             else:
@@ -821,53 +912,51 @@ if selected_view == "📊 Executive Financial Dashboard":
     stmt_tabs = st.tabs(["Income Statement", "Balance Sheet", "Cash Flows", "Validation Checks"])
     statements = active_analytics.get("statements", {})
 
+    def _clean_statement_df(statement_dict, col_title, is_eps_check=False):
+        rows = []
+        for item, y_vals in statement_dict.items():
+            # Check if this item has at least one valid reported value
+            has_data = any(y_vals.get(str(y)) is not None or y_vals.get(int(y) if str(y).isdigit() else y) is not None for y in years)
+            if not has_data:
+                continue  # Skip unpopulated lines for ultra-clean tables
+            
+            row = {col_title: item.replace("_", " ").title()}
+            for y in sorted(years, reverse=True):
+                val = y_vals.get(str(y))
+                if val is None and str(y).isdigit():
+                    val = y_vals.get(int(y))
+                
+                if val is not None:
+                    if is_eps_check and "eps" in item.lower():
+                        row[f"FY {y}"] = f"${float(val):.2f}"
+                    elif isinstance(val, (int, float)):
+                        abs_v = abs(val)
+                        sign = "-" if val < 0 else ""
+                        row[f"FY {y}"] = f"{sign}${abs_v:,.0f}"
+                    else:
+                        row[f"FY {y}"] = str(val)
+                else:
+                    row[f"FY {y}"] = "—"
+            rows.append(row)
+        return pd.DataFrame(rows) if rows else pd.DataFrame(columns=[col_title])
+
     with stmt_tabs[0]:
         inc_data = statements.get("income_statement", {})
         if inc_data:
-            rows = []
-            for item, y_vals in inc_data.items():
-                row = {"Financial Item": item.replace("_", " ").title()}
-                for y in sorted(years, reverse=True):
-                    val = y_vals.get(str(y))
-                    if val is not None:
-                        if "eps" in item.lower():
-                            row[f"FY {y}"] = f"${val:.2f}"
-                        else:
-                            row[f"FY {y}"] = f"${val:,.0f}" if isinstance(val, (int, float)) else str(val)
-                    else:
-                        row[f"FY {y}"] = "—"
-                rows.append(row)
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            df_inc = _clean_statement_df(inc_data, "Financial Statement Line Item", is_eps_check=True)
+            st.dataframe(df_inc, use_container_width=True, hide_index=True, height=min(400, 38 * len(df_inc) + 40))
 
     with stmt_tabs[1]:
         bal_data = statements.get("balance_sheet", {})
         if bal_data:
-            rows = []
-            for item, y_vals in bal_data.items():
-                row = {"Balance Sheet Item": item.replace("_", " ").title()}
-                for y in sorted(years, reverse=True):
-                    val = y_vals.get(str(y))
-                    if val is not None:
-                        row[f"FY {y}"] = f"${val:,.0f}" if isinstance(val, (int, float)) else str(val)
-                    else:
-                        row[f"FY {y}"] = "—"
-                rows.append(row)
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            df_bal = _clean_statement_df(bal_data, "Balance Sheet Line Item")
+            st.dataframe(df_bal, use_container_width=True, hide_index=True, height=min(400, 38 * len(df_bal) + 40))
 
     with stmt_tabs[2]:
         cf_data = statements.get("cash_flows", {})
         if cf_data:
-            rows = []
-            for item, y_vals in cf_data.items():
-                row = {"Cash Flow Item": item.replace("_", " ").title()}
-                for y in sorted(years, reverse=True):
-                    val = y_vals.get(str(y))
-                    if val is not None:
-                        row[f"FY {y}"] = f"${val:,.0f}" if isinstance(val, (int, float)) else str(val)
-                    else:
-                        row[f"FY {y}"] = "—"
-                rows.append(row)
-            st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+            df_cf = _clean_statement_df(cf_data, "Cash Flow Line Item")
+            st.dataframe(df_cf, use_container_width=True, hide_index=True, height=min(400, 38 * len(df_cf) + 40))
 
     with stmt_tabs[3]:
         val_checks_list = active_analytics.get("validation", {}).get("checks", [])
