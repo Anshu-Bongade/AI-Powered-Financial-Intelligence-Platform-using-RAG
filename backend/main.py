@@ -73,14 +73,22 @@ def get_financial_extractor():
 
 @app.get("/api/health")
 def health_check():
-    rag = get_rag_service()
     doc_count = len(list(DATA_DIR.glob("*.pdf")))
+    has_gemini = bool(GEMINI_API_KEY)
+    
+    chunks_count = 0
+    try:
+        rag = get_rag_service()
+        chunks_count = rag.collection.count() if rag and hasattr(rag, 'collection') else 0
+    except Exception as e:
+        print(f"[Health] Non-critical warning checking RAG service: {e}")
+
     return {
         "status": "healthy",
+        "has_gemini_key": has_gemini,
         "gemini_model": GEMINI_MODEL,
-        "chroma_chunks_count": rag.collection.count(),
-        "available_reports_count": doc_count,
-        "collection_name": rag.collection.name
+        "chroma_chunks_count": chunks_count,
+        "available_reports_count": doc_count
     }
 
 @app.get("/api/documents")

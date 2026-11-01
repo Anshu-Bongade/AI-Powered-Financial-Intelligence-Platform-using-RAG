@@ -559,14 +559,16 @@ class RAGService:
     _instance = None
 
     def __init__(self):
-        if not GEMINI_API_KEY:
-            raise ValueError("GEMINI_API_KEY not found. Check your .env file.")
+        self.gemini_client = None
+        if GEMINI_API_KEY:
+            print("[RAGService] Connecting to Gemini API...")
+            self.gemini_client = genai.Client(
+                api_key=GEMINI_API_KEY,
+                http_options=types.HttpOptions(timeout=60000)
+            )
+        else:
+            print("[RAGService] Notice: GEMINI_API_KEY not configured. LLM text generation will be unavailable until key is set.")
 
-        print("[RAGService] Connecting to Gemini API...")
-        self.gemini_client = genai.Client(
-            api_key=GEMINI_API_KEY,
-            http_options=types.HttpOptions(timeout=60000)
-        )
         self.gemini_model = GEMINI_MODEL
 
         print(f"[RAGService] Loading embedding model ({EMBEDDING_MODEL_NAME})...")
@@ -776,6 +778,12 @@ USER QUESTION:
 
 ANSWER:
 """
+
+        if not self.gemini_client:
+            return (
+                "AI generation unavailable: GEMINI_API_KEY is not configured in backend environment variables. "
+                "Please configure GEMINI_API_KEY in your hosting dashboard (Render / .env)."
+            )
 
         response = self.gemini_client.models.generate_content(
             model=self.gemini_model,

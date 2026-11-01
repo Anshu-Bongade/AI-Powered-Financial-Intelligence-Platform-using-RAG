@@ -51,9 +51,5 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 # Expose target port
 EXPOSE 8000
 
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8000/api/health || exit 1
-
 # Launch production server with dynamic port support ($PORT for Render / Railway / Cloud Run)
 CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
