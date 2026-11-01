@@ -281,7 +281,7 @@ export default function App() {
   const [appData, setAppData] = useState(null);
   const [systemStatus, setSystemStatus] = useState(null);
   const [availableDocs, setAvailableDocs] = useState([]);
-  const [currentDoc, setCurrentDoc] = useState('Apple.pdf');
+  const [currentDoc, setCurrentDoc] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -293,17 +293,20 @@ export default function App() {
       const res = await fetch('/api/documents');
       if (res.ok) {
         const data = await res.json();
-        setAvailableDocs(data.documents || []);
+        const docs = data.documents || [];
+        setAvailableDocs(docs);
+        return docs;
       }
     } catch (e) {
       console.error('Failed to fetch documents:', e);
     }
+    return [];
   };
 
   const fetchData = async (docName = null) => {
     setIsLoading(true);
     setError(null);
-    const targetDoc = docName || currentDoc || 'Apple.pdf';
+    const targetDoc = docName || currentDoc || (availableDocs[0]?.filename) || 'Apple.pdf';
     try {
       const financialsUrl = `/api/financials?doc_name=${encodeURIComponent(targetDoc)}`;
       const finRes = await fetch(financialsUrl);
@@ -382,9 +385,15 @@ export default function App() {
       setAvailableDocs(updatedDocs);
 
       // If the currently selected doc was deleted, switch to the first remaining doc
-      const nextDoc = updatedDocs.find(d => d.filename !== filename)?.filename || 'Apple.pdf';
+      const nextDoc = updatedDocs.find(d => d.filename !== filename)?.filename || (updatedDocs[0]?.filename) || '';
       setCurrentDoc(nextDoc);
-      await fetchData(nextDoc);
+      if (nextDoc) {
+        await fetchData(nextDoc);
+      } else {
+        setRawData(null);
+        setAppData(null);
+        setIsLoading(false);
+      }
     } catch (err) {
       console.error('Delete error:', err);
       alert(`Could not delete report: ${err.message}`);
@@ -393,8 +402,25 @@ export default function App() {
   };
 
   useEffect(() => {
-    fetchDocuments();
-    fetchData();
+    const initApp = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const docs = await fetchDocuments();
+        let target = 'Apple.pdf';
+        if (docs && docs.length > 0) {
+          const hasApple = docs.some(d => d.filename === 'Apple.pdf');
+          target = hasApple ? 'Apple.pdf' : docs[0].filename;
+        }
+        setCurrentDoc(target);
+        await fetchData(target);
+      } catch (err) {
+        console.error('App init error:', err);
+        setError(err.message || 'Failed to initialize dashboard');
+        setIsLoading(false);
+      }
+    };
+    initApp();
   }, []);
 
   const { metadata, kpiCards, kpiCardsData, chartTrends, productMixData, ratiosData, validationData, analytics, statements, validation } = appData || {};
@@ -458,7 +484,7 @@ export default function App() {
                   <span>{error}</span>
                 </div>
                 <button
-                  onClick={fetchData}
+                  onClick={() => fetchData(currentDoc || availableDocs[0]?.filename)}
                   className="px-3 py-1 rounded bg-rose-600 text-white font-medium hover:bg-rose-500 transition-colors"
                 >
                   Retry

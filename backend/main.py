@@ -184,21 +184,40 @@ def delete_document(filename: str):
 
 @app.get("/api/financials")
 def get_financial_dashboard(
-    doc_name: str = Query(default="Apple.pdf", description="Filename of report to analyze"),
+    doc_name: Optional[str] = Query(default=None, description="Filename of report to analyze"),
     force_refresh: bool = Query(default=False, description="Bypass cache and re-extract")
 ):
     """Retrieve full verified financial KPIs, ratios, YoY trends, and validation checks."""
+    if not doc_name:
+        doc_name = "Apple.pdf"
+
     stem = Path(doc_name).stem
     md_path = MARKDOWN_DIR / f"{stem}.md"
+    pdf_path = DATA_DIR / doc_name
 
-    if not md_path.exists():
-        # Check if PDF exists in data
-        pdf_path = DATA_DIR / doc_name
-        if not pdf_path.exists():
+    # If requested file does not exist, attempt fallback to any available report
+    if not md_path.exists() and not pdf_path.exists():
+        available_mds = list(MARKDOWN_DIR.glob("*.md"))
+        available_pdfs = list(DATA_DIR.glob("*.pdf"))
+        fallback_file = None
+        if available_mds:
+            fallback_file = f"{available_mds[0].stem}.pdf"
+        elif available_pdfs:
+            fallback_file = available_pdfs[0].name
+        
+        if fallback_file:
+            print(f"[Financials] '{doc_name}' not found; falling back to '{fallback_file}'")
+            doc_name = fallback_file
+            stem = Path(doc_name).stem
+            md_path = MARKDOWN_DIR / f"{stem}.md"
+            pdf_path = DATA_DIR / doc_name
+        else:
             raise HTTPException(
                 status_code=404,
                 detail=f"Report file '{doc_name}' not found. Please upload it first."
             )
+
+    if not md_path.exists():
         # Extract markdown if missing
         processor = get_pdf_processor()
         processor.extract_and_index_pdf(pdf_path, doc_name)
