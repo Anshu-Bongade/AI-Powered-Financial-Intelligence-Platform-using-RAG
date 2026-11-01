@@ -40,7 +40,13 @@ class PDFProcessor:
         # Step 1: Extract Markdown from PDF
         print(f"[PDFProcessor] Extracting markdown from {pdf_path}...")
         if pymupdf4llm is not None:
-            markdown_text = pymupdf4llm.to_markdown(str(pdf_path))
+            try:
+                markdown_text = pymupdf4llm.to_markdown(str(pdf_path), ignore_images=True)
+            except Exception as e:
+                print(f"[PDFProcessor] pymupdf4llm fallback triggered: {e}")
+                import fitz
+                doc = fitz.open(str(pdf_path))
+                markdown_text = "\n\n".join([page.get_text() for page in doc])
         else:
             try:
                 import fitz
@@ -65,16 +71,21 @@ class PDFProcessor:
                 f.write(f"{'=' * 30}\n")
                 f.write(chunk + "\n")
 
-        # Step 4: Generate embeddings & store in ChromaDB
-        print("[PDFProcessor] Generating embeddings and storing in ChromaDB...")
+        # Step 4: Generate embeddings & store in ChromaDB (batched for low RAM)
+        print("[PDFProcessor] Generating embeddings and storing in ChromaDB in batches...")
+        embeddings = []
         if hasattr(self.rag_service, 'embedding_fn') and self.rag_service.embedding_fn is not None:
-            raw_embs = self.rag_service.embedding_fn(chunks)
-            embeddings = [[float(x) for x in emb] for emb in raw_embs]
+            batch_size = 32
+            for i in range(0, len(chunks), batch_size):
+                batch_chunks = chunks[i:i + batch_size]
+                raw_embs = self.rag_service.embedding_fn(batch_chunks)
+                embeddings.extend([[float(x) for x in emb] for emb in raw_embs])
         elif self.rag_service.embedding_model is not None:
             embeddings = self.rag_service.embedding_model.encode(
                 chunks,
                 normalize_embeddings=True,
-                show_progress_bar=False
+                show_progress_bar=False,
+                batch_size=32
             )
         else:
             embeddings = [[0.0] * 384 for _ in chunks]
