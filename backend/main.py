@@ -31,6 +31,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_origin_regex=r"^https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -305,6 +306,8 @@ def rag_chat(request: ChatRequest):
         raise
     except Exception as e:
         print(f"[API] Error in rag_chat: {e}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to generate answer: {str(e)}")
 
 @app.get("/api/sample-queries")

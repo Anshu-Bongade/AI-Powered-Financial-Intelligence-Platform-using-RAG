@@ -95,10 +95,16 @@ class PDFProcessor:
                 for i in range(start, end)
             ]
 
+            batch_embeddings = (
+                embeddings[start:end].tolist()
+                if hasattr(embeddings[start:end], "tolist")
+                else embeddings[start:end]
+            )
+
             collection.upsert(
                 ids=ids,
                 documents=chunks[start:end],
-                embeddings=embeddings[start:end].tolist(),
+                embeddings=batch_embeddings,
                 metadatas=metadatas
             )
 

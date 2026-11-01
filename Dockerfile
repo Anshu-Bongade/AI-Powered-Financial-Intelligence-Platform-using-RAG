@@ -30,10 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PyTorch CPU-only first for smaller image footprint & fast downloads
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-
-# Install backend dependencies
+# Install backend dependencies (pure ONNX Runtime - zero heavy PyTorch bloat)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

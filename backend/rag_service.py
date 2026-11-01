@@ -20,11 +20,6 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-try:
-    import torch
-    torch.set_num_threads(1)
-except Exception:
-    pass
 
 from google import genai
 from google.genai import types
@@ -34,11 +29,6 @@ try:
     _has_onnx = True
 except Exception:
     _has_onnx = False
-
-try:
-    from sentence_transformers import SentenceTransformer
-except Exception:
-    SentenceTransformer = None
 from backend.config import (
     GEMINI_API_KEY,
     GEMINI_MODEL,
@@ -595,8 +585,12 @@ class RAGService:
             self.embedding_fn = ONNXMiniLM_L6_V2()
             self.embedding_model = None
         else:
-            print(f"[RAGService] Loading embedding model ({EMBEDDING_MODEL_NAME})...")
-            self.embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME) if SentenceTransformer else None
+            print(f"[RAGService] Loading fallback embedding model ({EMBEDDING_MODEL_NAME})...")
+            try:
+                from sentence_transformers import SentenceTransformer
+                self.embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+            except Exception:
+                self.embedding_model = None
             self.embedding_fn = None
 
         print(f"[RAGService] Connecting to ChromaDB at {CHROMA_DIR}...")
@@ -645,14 +639,11 @@ class RAGService:
             query_embedding = [float(x) for x in raw_emb]
         elif self.embedding_model is not None:
             try:
-                with torch.no_grad():
-                    query_embedding = self.embedding_model.encode(
-                        question, normalize_embeddings=True
-                    ).tolist()
-            except Exception:
                 query_embedding = self.embedding_model.encode(
                     question, normalize_embeddings=True
                 ).tolist()
+            except Exception:
+                query_embedding = [0.0] * 384
         else:
             query_embedding = [0.0] * 384
 
