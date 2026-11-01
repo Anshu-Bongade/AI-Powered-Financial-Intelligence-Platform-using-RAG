@@ -1068,22 +1068,6 @@ elif selected_view == "🤖 Grounded SEC 10-K RAG AI Chat":
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
-            if msg.get("sources"):
-                with st.expander(f"🔍 Source Citations & Verified Facts ({len(msg['sources'])})"):
-                    for idx, s in enumerate(msg["sources"], 1):
-                        s_type = s.get("citation_type", "retrieved_chunk")
-                        badge = "🟢 Verified Financial Cache" if s_type == "verified_financial_cache" else "📄 Audited 10-K Text"
-                        dist = s.get("distance", 0.0)
-                        sim_pct = max(0, round((1.0 - dist) * 100, 1)) if dist else 100
-                        st.markdown(f"""
-                            <div class="citation-box">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                                    <b>#{idx} • {badge}</b>
-                                    <span style="color: #60a5fa; font-size: 0.78rem;">Match: {sim_pct}% • Source: {s.get('source', '10-K')}</span>
-                                </div>
-                                <div style="font-size: 0.84rem; color: #d1d5db; white-space: pre-wrap;">{s.get('excerpt', '')}</div>
-                            </div>
-                        """, unsafe_allow_html=True)
 
     # Process New Question
     if user_query:
@@ -1094,7 +1078,7 @@ elif selected_view == "🤖 Grounded SEC 10-K RAG AI Chat":
 
         # Generate response using RAG Service
         with st.chat_message("assistant"):
-            with st.spinner("Analyzing verified SEC statements & retrieving grounded chunks..."):
+            with st.spinner("Analyzing verified SEC statements & generating response..."):
                 try:
                     result = rag_service.query(
                         question=user_query,
@@ -1102,31 +1086,11 @@ elif selected_view == "🤖 Grounded SEC 10-K RAG AI Chat":
                         doc_filter=doc_filter_arg
                     )
                     answer_text = result.get("answer", "No answer generated.")
-                    sources = result.get("sources", [])
-
                     st.markdown(answer_text)
-
-                    if sources:
-                        with st.expander(f"🔍 Source Citations & Verified Facts ({len(sources)})", expanded=True):
-                            for idx, s in enumerate(sources, 1):
-                                s_type = s.get("citation_type", "retrieved_chunk")
-                                badge = "🟢 Verified Financial Cache" if s_type == "verified_financial_cache" else "📄 Audited 10-K Text"
-                                dist = s.get("distance", 0.0)
-                                sim_pct = max(0, round((1.0 - dist) * 100, 1)) if dist else 100
-                                st.markdown(f"""
-                                    <div class="citation-box">
-                                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                                            <b>#{idx} • {badge}</b>
-                                            <span style="color: #60a5fa; font-size: 0.78rem;">Match: {sim_pct}% • Source: {s.get('source', '10-K')}</span>
-                                        </div>
-                                        <div style="font-size: 0.84rem; color: #d1d5db; white-space: pre-wrap;">{s.get('excerpt', '')}</div>
-                                    </div>
-                                """, unsafe_allow_html=True)
 
                     st.session_state.chat_history.append({
                         "role": "assistant",
-                        "content": answer_text,
-                        "sources": sources
+                        "content": answer_text
                     })
 
                 except Exception as err:
