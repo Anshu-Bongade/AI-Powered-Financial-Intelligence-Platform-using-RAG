@@ -32,53 +32,19 @@ class PDFProcessor:
         )
 
     def extract_markdown(self, pdf_path: Path, filename: str) -> Path:
-        """Fast targeted extraction of full text and SEC financial tables to Markdown."""
+        """Fast high-speed extraction of full text and SEC tables using PyMuPDF."""
         stem = Path(filename).stem
         markdown_path = MARKDOWN_DIR / f"{stem}.md"
 
-        print(f"[PDFProcessor] Extracting markdown from {pdf_path} using fast PyMuPDF engine...")
+        print(f"[PDFProcessor] Extracting text from {pdf_path} using fast PyMuPDF engine...")
         try:
             import fitz
             doc = fitz.open(str(pdf_path))
-            full_pages = []
-            statement_keywords = [
-                'CONSOLIDATED STATEMENTS OF OPERATIONS',
-                'CONSOLIDATED STATEMENTS OF INCOME',
-                'CONSOLIDATED STATEMENTS OF EARNINGS',
-                'STATEMENTS OF OPERATIONS',
-                'CONSOLIDATED BALANCE SHEETS',
-                'BALANCE SHEETS',
-                'CONSOLIDATED STATEMENTS OF CASH FLOWS',
-                'STATEMENTS OF CASH FLOWS',
-                'CONSOLIDATED STATEMENTS OF FINANCIAL POSITION'
-            ]
-
-            for pno, page in enumerate(doc):
-                text = page.get_text()
-                upper = text.upper()
-                has_statement = any(k in upper for k in statement_keywords) and (
-                    'TOTAL' in upper or 'ASSETS' in upper or 'REVENUE' in upper or 'SALES' in upper
-                )
-
-                # If this page contains a financial statement, extract tables to markdown
-                if has_statement:
-                    tabs = page.find_tables()
-                    if tabs.tables:
-                        table_md = '\n\n'.join(t.to_markdown() for t in tabs.tables)
-                        full_pages.append(f"## Page {pno+1}\n{text}\n\n{table_md}")
-                        continue
-                full_pages.append(f"## Page {pno+1}\n{text}")
-
+            full_pages = [f"## Page {pno + 1}\n" + page.get_text() for pno, page in enumerate(doc)]
             markdown_text = "\n\n".join(full_pages)
         except Exception as e:
-            print(f"[PDFProcessor] Fast extraction fallback to pymupdf4llm: {e}")
-            if pymupdf4llm is not None:
-                try:
-                    markdown_text = pymupdf4llm.to_markdown(str(pdf_path), ignore_images=True)
-                except Exception:
-                    markdown_text = f"# {filename}\nSEC Annual Report Document."
-            else:
-                markdown_text = f"# {filename}\nSEC Annual Report Document."
+            print(f"[PDFProcessor] PyMuPDF extraction error: {e}")
+            markdown_text = f"# {filename}\nSEC Annual Report Document."
 
         markdown_path.write_text(markdown_text, encoding="utf-8")
         print(f"[PDFProcessor] Saved markdown to {markdown_path} ({len(markdown_text)} chars)")

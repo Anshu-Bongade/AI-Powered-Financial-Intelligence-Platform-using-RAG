@@ -44,17 +44,18 @@ class FinancialExtractor:
         self,
         content: str,
         heading_patterns: List[str],
+        required_terms: Optional[List[str]] = None,
         exclude_terms: Optional[List[str]] = None,
-        min_rows: int = 12
+        min_rows: int = 10
     ) -> Tuple[str, str]:
         """
-        Locates the genuine financial statement table in markdown.
-        Scans for primary headings, ignores Notes / TOC, finds the contiguous table,
-        and returns (heading_text, full_markdown_table).
+        Locates the genuine financial statement table in markdown or clean text.
+        Scans for primary headings, ignores Notes / TOC, finds the contiguous table or text block,
+        and returns (heading_text, full_table_or_text).
         """
         if exclude_terms is None:
             exclude_terms = [
-                'NOTE ', 'NOTES TO', 'TABLE OF CONTENTS', 'INDEX',
+                'NOTE ', 'NOTES TO', 'TABLE OF CONTENTS', 'INDEX TO',
                 'COMPONENTS', 'BENEFIT INCLUDED', 'EXPRESSED AS A PERCENTAGE', 'SCHEDULE'
             ]
 
@@ -69,27 +70,40 @@ class FinancialExtractor:
 
             for cand in valid_matches:
                 start = cand.start()
-                # Find where the markdown table starts after the heading
-                table_start_m = re.search(r'\n[ \t]*\|', content[start:])
-                if not table_start_m:
+                heading_text = cand.group(1).strip()
+                search_window = content[start:start + 5000]
+
+                # If required terms provided, ensure this window is the real statement, not an index/overview
+                if required_terms and not any(req in search_window.upper() for req in required_terms):
                     continue
-                actual_table_start = start + table_start_m.start() + 1
 
-                # Collect the contiguous block of rows starting with '|'
-                lines = content[actual_table_start:].splitlines(keepends=True)
-                table_lines = []
-                for line in lines:
-                    if line.strip().startswith('|'):
-                        table_lines.append(line)
-                    else:
-                        # Stop at the end of the contiguous statement table
+                # 1. Try markdown table (| ...)
+                table_start_m = re.search(r'\n[ \t]*\|', search_window)
+                if table_start_m:
+                    actual_table_start = start + table_start_m.start() + 1
+                    lines = content[actual_table_start:].splitlines(keepends=True)
+                    table_lines = []
+                    for line in lines:
+                        if line.strip().startswith('|'):
+                            table_lines.append(line)
+                        else:
+                            break
+                    if len(table_lines) >= min_rows:
+                        full_table = ''.join(table_lines)
+                        print(f"[FinancialExtractor] Detected statement table: '{heading_text[:60]}' ({len(table_lines)} rows)")
+                        return heading_text, full_table
+
+                # 2. Plain text statement table fallback (take next 65 lines)
+                text_lines = search_window.splitlines(keepends=True)
+                collected = []
+                for line in text_lines[1:]:
+                    collected.append(line)
+                    if len(collected) >= 65:
                         break
-
-                if len(table_lines) >= min_rows:
-                    heading_text = cand.group(1).strip()
-                    full_table = ''.join(table_lines)
-                    print(f"[FinancialExtractor] Detected statement: '{heading_text[:60]}' ({len(table_lines)} rows)")
-                    return heading_text, full_table
+                if len(collected) >= 15:
+                    full_text_table = ''.join(collected)
+                    print(f"[FinancialExtractor] Detected plain text statement: '{heading_text[:60]}' ({len(collected)} lines)")
+                    return heading_text, full_text_table
 
         return "", ""
 
@@ -101,30 +115,30 @@ class FinancialExtractor:
         ops_heading, ops_table = self._isolate_contiguous_statement_table(
             markdown_text,
             [
-                r'(?:^|\n)(#{1,6}\s*\**\s*(?:[^\n]*\b)?(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS)|STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS))\b[^\n]*)',
-                r'(?:^|\n)(\b(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS)|STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS))\b[^\n]*)'
+                r'(?:^|\n)(#{0,6}\s*\**\s*(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS)|STATEMENTS?\s+OF\s+(?:OPERATIONS|INCOME|EARNINGS)|STATEMENT\s+OF\s+PROFIT\s+AND\s+LOSS)\b[^\n]*)'
             ],
-            min_rows=12
+            required_terms=['GROSS MARGIN', 'TOTAL COST', 'OPERATING INCOME', 'INCOME FROM OPERATIONS', 'TOTAL NET SALES', 'TOTAL REVENUE', 'REVENUE FROM OPERATIONS', 'TOTAL REVENUES'],
+            min_rows=10
         )
 
         # Balance Sheet
         bs_heading, bs_table = self._isolate_contiguous_statement_table(
             markdown_text,
             [
-                r'(?:^|\n)(#{1,6}\s*\**\s*(?:[^\n]*\b)?(?:CONSOLIDATED\s+BALANCE\s+SHEETS?|BALANCE\s+SHEETS?|CONSOLIDATED\s+STATEMENTS?\s+OF\s+FINANCIAL\s+POSITION)\b[^\n]*)',
-                r'(?:^|\n)(\b(?:CONSOLIDATED\s+BALANCE\s+SHEETS?|BALANCE\s+SHEETS?|CONSOLIDATED\s+STATEMENTS?\s+OF\s+FINANCIAL\s+POSITION)\b[^\n]*)'
+                r'(?:^|\n)(#{0,6}\s*\**\s*(?:CONSOLIDATED\s+BALANCE\s+SHEETS?|BALANCE\s+SHEETS?|CONSOLIDATED\s+STATEMENTS?\s+OF\s+FINANCIAL\s+POSITION)\b[^\n]*)'
             ],
-            min_rows=15
+            required_terms=['TOTAL ASSETS', 'TOTAL LIABILITIES', 'CURRENT ASSETS', 'SHAREHOLDERS', 'STOCKHOLDERS', 'EQUITY'],
+            min_rows=10
         )
 
         # Cash Flows
         cf_heading, cf_table = self._isolate_contiguous_statement_table(
             markdown_text,
             [
-                r'(?:^|\n)(#{1,6}\s*\**\s*(?:[^\n]*\b)?(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+CASH\s+FLOWS?|STATEMENTS?\s+OF\s+CASH\s+FLOWS?|CONSOLIDATED\s+CASH\s+FLOW\s+STATEMENTS?)\b[^\n]*)',
-                r'(?:^|\n)(\b(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+CASH\s+FLOWS?|STATEMENTS?\s+OF\s+CASH\s+FLOWS?|CONSOLIDATED\s+CASH\s+FLOW\s+STATEMENTS?)\b[^\n]*)'
+                r'(?:^|\n)(#{0,6}\s*\**\s*(?:CONSOLIDATED\s+STATEMENTS?\s+OF\s+CASH\s+FLOWS?|STATEMENTS?\s+OF\s+CASH\s+FLOWS?|CONSOLIDATED\s+CASH\s+FLOW\s+STATEMENTS?)\b[^\n]*)'
             ],
-            min_rows=15
+            required_terms=['OPERATING ACTIVITIES', 'INVESTING ACTIVITIES', 'FINANCING ACTIVITIES', 'CASH, CASH EQUIVALENTS'],
+            min_rows=10
         )
 
         return {
