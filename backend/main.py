@@ -210,7 +210,7 @@ def get_financial_dashboard(
     return analytics_payload
 
 @app.post("/api/upload")
-async def upload_annual_report(
+def upload_annual_report(
     file: UploadFile = File(...),
     force_reprocess: bool = Query(default=False, description="Re-extract even if already cached")
 ):
@@ -229,7 +229,7 @@ async def upload_annual_report(
 
     # Save uploaded PDF to data directory
     destination = DATA_DIR / file.filename
-    content = await file.read()
+    content = file.file.read()
     destination.write_bytes(content)
     print(f"[Upload] Saved uploaded file to {destination} ({len(content)} bytes)")
 
