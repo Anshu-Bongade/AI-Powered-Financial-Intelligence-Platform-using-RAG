@@ -226,20 +226,12 @@ with st.sidebar:
         "⚖️ Multi-Company Benchmark",
         "🤖 Grounded SEC 10-K RAG AI Chat"
     ]
-    if "current_view" not in st.session_state:
-        st.session_state.current_view = "📊 Executive Financial Dashboard"
-
-    def on_nav_change():
-        st.session_state.current_view = st.session_state.sidebar_nav_choice
-
     selected_view = st.radio(
         "Navigate to:",
         options=view_options,
-        index=view_options.index(st.session_state.current_view) if st.session_state.current_view in view_options else 0,
-        key="sidebar_nav_choice",
-        on_change=on_nav_change
+        index=0,
+        key="main_platform_nav"
     )
-    st.session_state.current_view = selected_view
     st.markdown("---")
 
     available_docs = get_available_documents()
@@ -378,6 +370,7 @@ if not data_years:
     data_years = raw_years if raw_years else ["2024"]
 
 data_years = sorted(data_years, reverse=True)
+years = data_years
 latest_year = data_years[0]
 prev_year = data_years[1] if len(data_years) > 1 else None
 
@@ -411,35 +404,24 @@ with col_h2:
     """, unsafe_allow_html=True)
 
 # ==============================================================================
-# PROMINENT TOP NAVIGATION BAR (High Visibility)
+# ACTIVE VIEW ROUTING
 # ==============================================================================
-nav_c1, nav_c2, nav_c3 = st.columns(3)
-with nav_c1:
-    is_dash = (st.session_state.current_view == "📊 Executive Financial Dashboard")
-    if st.button("📊 Executive Financial Dashboard", use_container_width=True, type="primary" if is_dash else "secondary"):
-        st.session_state.current_view = "📊 Executive Financial Dashboard"
-        st.session_state.sidebar_nav_choice = "📊 Executive Financial Dashboard"
-        st.rerun()
-with nav_c2:
-    is_comp = (st.session_state.current_view == "⚖️ Multi-Company Benchmark")
-    if st.button("⚖️ Multi-Company Benchmark", use_container_width=True, type="primary" if is_comp else "secondary"):
-        st.session_state.current_view = "⚖️ Multi-Company Benchmark"
-        st.session_state.sidebar_nav_choice = "⚖️ Multi-Company Benchmark"
-        st.rerun()
-with nav_c3:
-    is_chat = (st.session_state.current_view == "🤖 Grounded SEC 10-K RAG AI Chat")
-    if st.button("🤖 Grounded SEC 10-K RAG AI Chat", use_container_width=True, type="primary" if is_chat else "secondary"):
-        st.session_state.current_view = "🤖 Grounded SEC 10-K RAG AI Chat"
-        st.session_state.sidebar_nav_choice = "🤖 Grounded SEC 10-K RAG AI Chat"
-        st.rerun()
-
-st.markdown("<hr style='border-color: #1f2937; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+st.markdown(f'''
+<div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="font-weight: 700; color: #60a5fa; font-size: 1.05rem;">
+        {selected_view}
+    </div>
+    <div style="color: #6b7280; font-size: 0.8rem;">
+        Switch sections anytime in the left sidebar menu
+    </div>
+</div>
+''', unsafe_allow_html=True)
 
 
 # ==============================================================================
 # VIEW 1: EXECUTIVE FINANCIAL DASHBOARD
 # ==============================================================================
-if st.session_state.current_view == "📊 Executive Financial Dashboard":
+if selected_view == "📊 Executive Financial Dashboard":
     kpis = active_analytics.get("kpis", {})
     yoy_growth = active_analytics.get("yoy_growth", {})
     ratios = active_analytics.get("ratios", {}).get(latest_year, {})
@@ -853,7 +835,7 @@ if st.session_state.current_view == "📊 Executive Financial Dashboard":
 # ==============================================================================
 # VIEW 2: MULTI-COMPANY BENCHMARK & COMPARISON
 # ==============================================================================
-elif st.session_state.current_view == "⚖️ Multi-Company Benchmark":
+elif selected_view == "⚖️ Multi-Company Benchmark":
     st.markdown("### ⚖️ Cross-Company Comparative Analytics")
     st.caption("Benchmark 2 to 4 companies side-by-side using normalized margins, growth rates, and balance sheet strength.")
 
@@ -1038,7 +1020,7 @@ elif st.session_state.current_view == "⚖️ Multi-Company Benchmark":
 # ==============================================================================
 # VIEW 3: GROUNDED SEC 10-K RAG AI CHAT
 # ==============================================================================
-elif st.session_state.current_view == "🤖 Grounded SEC 10-K RAG AI Chat":
+elif selected_view == "🤖 Grounded SEC 10-K RAG AI Chat":
     st.markdown("### 🤖 Grounded SEC 10-K Financial Assistant")
     st.caption("Ask questions with guaranteed zero hallucination: queries automatically query verified financial statements and retrieved audited 10-K chunks with citations.")
 
