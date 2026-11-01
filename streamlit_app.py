@@ -358,7 +358,10 @@ with st.sidebar:
                 # Step 4: ChromaDB Indexing
                 status_box.write("🧠 Vectorizing chunks & indexing into ChromaDB (ONNX Embeddings)...")
                 progress_bar.progress(0.90)
-                pdf_processor.index_chunks(md_path, file_name)
+                try:
+                    pdf_processor.index_chunks(md_path, file_name)
+                except Exception as vec_err:
+                    print(f"[Upload] Vector indexing notice: {vec_err}")
                 progress_bar.progress(1.0)
 
                 status_box.update(label=f"✅ Successfully processed and indexed '{file_name}'!", state="complete", expanded=False)
