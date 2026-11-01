@@ -67,11 +67,17 @@ class PDFProcessor:
 
         # Step 4: Generate embeddings & store in ChromaDB
         print("[PDFProcessor] Generating embeddings and storing in ChromaDB...")
-        embeddings = self.rag_service.embedding_model.encode(
-            chunks,
-            normalize_embeddings=True,
-            show_progress_bar=False
-        )
+        if hasattr(self.rag_service, 'embedding_fn') and self.rag_service.embedding_fn is not None:
+            raw_embs = self.rag_service.embedding_fn(chunks)
+            embeddings = [[float(x) for x in emb] for emb in raw_embs]
+        elif self.rag_service.embedding_model is not None:
+            embeddings = self.rag_service.embedding_model.encode(
+                chunks,
+                normalize_embeddings=True,
+                show_progress_bar=False
+            )
+        else:
+            embeddings = [[0.0] * 384 for _ in chunks]
 
         collection = self.rag_service.collection
         batch_size = 100

@@ -37,8 +37,8 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Pre-download SentenceTransformer embedding model during build to eliminate runtime download delay & timeouts
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+# Pre-download ONNX embedding model during Docker build so it is permanently cached with zero runtime latency
+RUN python -c "from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2; ONNXMiniLM_L6_V2()(['warmup'])"
 
 # Copy backend code, configurations & initial data
 COPY backend/ ./backend/
