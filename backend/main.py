@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from backend.config import DATA_DIR, MARKDOWN_DIR, GEMINI_MODEL
+from backend.config import DATA_DIR, MARKDOWN_DIR, GEMINI_MODEL, GEMINI_API_KEY
 from backend.rag_service import RAGService
 from backend.pdf_processor import PDFProcessor
 from backend.financial_extractor import FinancialExtractor
@@ -77,11 +77,11 @@ def health_check():
     has_gemini = bool(GEMINI_API_KEY)
     
     chunks_count = 0
-    try:
-        rag = get_rag_service()
-        chunks_count = rag.collection.count() if rag and hasattr(rag, 'collection') else 0
-    except Exception as e:
-        print(f"[Health] Non-critical warning checking RAG service: {e}")
+    if RAGService._instance is not None:
+        try:
+            chunks_count = RAGService._instance.collection.count()
+        except Exception:
+            pass
 
     return {
         "status": "healthy",

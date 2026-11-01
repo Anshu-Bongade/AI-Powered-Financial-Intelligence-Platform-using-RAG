@@ -306,13 +306,21 @@ export default function App() {
     const targetDoc = docName || currentDoc || 'Apple.pdf';
     try {
       const financialsUrl = `/api/financials?doc_name=${encodeURIComponent(targetDoc)}`;
+      const finRes = await fetch(financialsUrl);
 
-      const [finRes, healthRes] = await Promise.all([
-        fetch(financialsUrl),
-        fetch('/api/health')
-      ]);
+      if (!finRes.ok) {
+        let errMsg = `HTTP ${finRes.status}`;
+        if (finRes.status === 502 || finRes.status === 503 || finRes.status === 504) {
+          errMsg = 'Backend is waking up (Render free tier spin-up takes ~30s). Please click Retry in a few seconds.';
+        } else {
+          try {
+            const errJson = await finRes.json();
+            if (errJson?.detail) errMsg = errJson.detail;
+          } catch (_) {}
+        }
+        throw new Error(errMsg);
+      }
 
-      if (!finRes.ok) throw new Error(`Financials API failed: ${finRes.statusText}`);
       const finData = await finRes.json();
       setRawData(finData);
       setAppData(transformApiData(finData));
@@ -320,10 +328,11 @@ export default function App() {
         setCurrentDoc(finData.source_document);
       }
 
-      if (healthRes.ok) {
-        const healthData = await healthRes.json();
-        setSystemStatus(healthData);
-      }
+      // Fetch health status asynchronously without blocking UI
+      fetch('/api/health')
+        .then(res => res.ok ? res.json() : null)
+        .then(data => { if (data) setSystemStatus(data); })
+        .catch(() => {});
     } catch (err) {
       console.error('Fetch error:', err);
       setError(err.message || 'Failed to connect to backend server.');
