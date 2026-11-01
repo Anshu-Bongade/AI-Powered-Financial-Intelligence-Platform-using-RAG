@@ -272,6 +272,43 @@ with st.sidebar:
             </div>
         """, unsafe_allow_html=True)
 
+    # --------------------------------------------------------------------------
+    # Delete Active Filing Option
+    # --------------------------------------------------------------------------
+    with st.expander("🗑️ Delete Selected Filing", expanded=False):
+        st.caption(f"Delete **{selected_filename}** from the platform (removes PDF, extracted cache, and ChromaDB vector embeddings).")
+        if st.button(f"Confirm Delete: {selected_filename}", type="primary", use_container_width=True, key="btn_delete_report"):
+            stem = Path(selected_filename).stem
+            # 1. Delete PDF from data/
+            pdf_path = DATA_DIR / selected_filename
+            if pdf_path.exists():
+                pdf_path.unlink()
+            # 2. Delete Markdown from mark_down/
+            md_path = MARKDOWN_DIR / f"{stem}.md"
+            if md_path.exists():
+                md_path.unlink()
+            # 3. Delete chunks txt from chunks/
+            chunks_path = BASE_DIR / "chunks" / f"{stem}_chunks.txt"
+            if chunks_path.exists():
+                chunks_path.unlink()
+            # 4. Delete cache JSON from financial_cache/
+            cache_path = CACHE_DIR / f"{stem}_financials.json"
+            if cache_path.exists():
+                cache_path.unlink()
+            # 5. Delete vectors from ChromaDB
+            try:
+                existing = rag_service.collection.get(where={"source": selected_filename})
+                if existing and existing.get("ids"):
+                    rag_service.collection.delete(ids=existing["ids"])
+            except Exception:
+                pass
+            
+            st.success(f"Successfully deleted '{selected_filename}'!")
+            remaining = [d["filename"] for d in get_available_documents() if d["filename"] != selected_filename]
+            st.session_state.selected_doc = remaining[0] if remaining else "Apple.pdf"
+            time.sleep(1.0)
+            st.rerun()
+
     st.markdown("---")
 
     # --------------------------------------------------------------------------
