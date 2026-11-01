@@ -288,18 +288,24 @@ def rag_chat(request: ChatRequest):
 
     filter_doc = request.doc_filter or request.document
 
-    rag = get_rag_service()
-    result = rag.query(
-        question=request.question,
-        top_k=request.top_k,
-        doc_filter=filter_doc
-    )
+    try:
+        rag = get_rag_service()
+        result = rag.query(
+            question=request.question,
+            top_k=request.top_k,
+            doc_filter=filter_doc
+        )
 
-    return ChatResponse(
-        question=result["question"],
-        answer=result["answer"],
-        sources=[ChatCitation(**s) for s in result["sources"]]
-    )
+        return ChatResponse(
+            question=result["question"],
+            answer=result["answer"],
+            sources=[ChatCitation(**s) for s in result["sources"]]
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"[API] Error in rag_chat: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate answer: {str(e)}")
 
 @app.get("/api/sample-queries")
 def get_sample_queries():

@@ -12,11 +12,20 @@ Key design decisions:
 - Each citation includes source PDF, chunk ID, page number (when available),
   section name (when available), and the actual retrieved text excerpt.
 """
+import os
 import json
 import re
 import chromadb
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+try:
+    import torch
+    torch.set_num_threads(1)
+except Exception:
+    pass
+
 from google import genai
 from google.genai import types
 from sentence_transformers import SentenceTransformer
@@ -615,9 +624,15 @@ class RAGService:
 
         fetch_k = min(top_k + 4, self.collection.count())
 
-        query_embedding = self.embedding_model.encode(
-            question, normalize_embeddings=True
-        ).tolist()
+        try:
+            with torch.no_grad():
+                query_embedding = self.embedding_model.encode(
+                    question, normalize_embeddings=True
+                ).tolist()
+        except Exception:
+            query_embedding = self.embedding_model.encode(
+                question, normalize_embeddings=True
+            ).tolist()
 
         query_args: Dict[str, Any] = {
             "query_embeddings": [query_embedding],

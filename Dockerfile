@@ -37,6 +37,9 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-download SentenceTransformer embedding model during build to eliminate runtime download delay & timeouts
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+
 # Copy backend code, configurations & initial data
 COPY backend/ ./backend/
 COPY data/ ./data/
