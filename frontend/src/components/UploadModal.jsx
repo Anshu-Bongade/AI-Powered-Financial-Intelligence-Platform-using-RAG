@@ -50,9 +50,9 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
       setElapsedSecs(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
 
-    // Dynamic step transition to reflect real stages
-    const step2Timer = setTimeout(() => setUploadStep(2), 2000);
-    const step3Timer = setTimeout(() => setUploadStep(3), 15000);
+    // Realistic step transitions matching the backend pipeline
+    const step2Timer = setTimeout(() => setUploadStep(2), 4000);
+    const step3Timer = setTimeout(() => setUploadStep(3), 25000);
 
     try {
       const data = await uploadAnnualReport(selectedFile);
@@ -169,7 +169,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
               </div>
             </div>
             <p className="text-[11px] text-slate-500 text-center">
-              Processing multi-page 10-K filings usually takes 20–40 seconds. Please keep this tab open.
+              Processing multi-page 10-K filings usually takes 30–60 seconds on cloud hosting. Please keep this tab open.
             </p>
           </div>
         )}
