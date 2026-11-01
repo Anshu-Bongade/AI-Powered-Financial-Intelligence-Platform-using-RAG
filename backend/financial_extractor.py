@@ -71,7 +71,7 @@ class FinancialExtractor:
             for cand in valid_matches:
                 start = cand.start()
                 heading_text = cand.group(1).strip()
-                search_window = content[start:start + 5000]
+                search_window = content[start:start + 14000]
 
                 # If required terms provided, ensure this window is the real statement, not an index/overview
                 if required_terms and not any(req in search_window.upper() for req in required_terms):
@@ -93,14 +93,16 @@ class FinancialExtractor:
                         print(f"[FinancialExtractor] Detected statement table: '{heading_text[:60]}' ({len(table_lines)} rows)")
                         return heading_text, full_table
 
-                # 2. Plain text statement table fallback (take next 65 lines)
+                # 2. Plain text statement table fallback (take up to 150 lines to capture full statements)
                 text_lines = search_window.splitlines(keepends=True)
                 collected = []
                 for line in text_lines[1:]:
-                    collected.append(line)
-                    if len(collected) >= 65:
+                    if len(collected) > 25 and re.match(r'^#{1,3}\s+[A-Z]', line.strip()):
                         break
-                if len(collected) >= 15:
+                    collected.append(line)
+                    if len(collected) >= 150:
+                        break
+                if len(collected) >= 10:
                     full_text_table = ''.join(collected)
                     print(f"[FinancialExtractor] Detected plain text statement: '{heading_text[:60]}' ({len(collected)} lines)")
                     return heading_text, full_text_table

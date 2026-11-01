@@ -536,6 +536,12 @@ if selected_view == "📊 Executive Financial Dashboard":
         om_val = p_ratios.get("operating_margin_pct")
     if om_val is None and rev_val and rev_val != 0:
         oi_amt = inc_data.get("operating_income", {}).get(latest_year)
+        if oi_amt is None:
+            for alt_k in ["income_from_operations", "operating_profit", "operating_income_loss"]:
+                val_k = inc_data.get(alt_k, {}).get(latest_year)
+                if val_k is not None:
+                    oi_amt = val_k
+                    break
         if oi_amt is not None:
             om_val = round((oi_amt / rev_val) * 100, 2)
     om_delta = yoy_growth.get("operating_income", {}).get(latest_year)
@@ -627,13 +633,18 @@ if selected_view == "📊 Executive Financial Dashboard":
         margin_trend = active_analytics.get("charts", {}).get("margin_trend", [])
         if margin_trend:
             fig_margin = go.Figure()
+            def _fmt_pct_safe(val):
+                if val is None or not isinstance(val, (int, float)):
+                    return ""
+                return f"{float(val):.1f}%"
+
             fig_margin.add_trace(go.Scatter(
                 x=[f"FY {m['year']}" for m in margin_trend],
                 y=[(m.get("gross_margin") if m.get("gross_margin") is not None else m.get("gross_margin_pct")) for m in margin_trend],
                 mode="lines+markers+text",
                 name="Gross Margin %",
                 line=dict(color="#3b82f6", width=3),
-                text=[f"{(m.get('gross_margin') if m.get('gross_margin') is not None else m.get('gross_margin_pct', 0)):.1f}%" for m in margin_trend],
+                text=[_fmt_pct_safe(m.get('gross_margin') if m.get('gross_margin') is not None else m.get('gross_margin_pct')) for m in margin_trend],
                 textposition="top center"
             ))
             fig_margin.add_trace(go.Scatter(
@@ -642,7 +653,7 @@ if selected_view == "📊 Executive Financial Dashboard":
                 mode="lines+markers+text",
                 name="Operating Margin %",
                 line=dict(color="#8b5cf6", width=3),
-                text=[f"{(m.get('operating_margin') if m.get('operating_margin') is not None else m.get('operating_margin_pct', 0)):.1f}%" for m in margin_trend],
+                text=[_fmt_pct_safe(m.get('operating_margin') if m.get('operating_margin') is not None else m.get('operating_margin_pct')) for m in margin_trend],
                 textposition="top center"
             ))
             fig_margin.add_trace(go.Scatter(
@@ -651,7 +662,7 @@ if selected_view == "📊 Executive Financial Dashboard":
                 mode="lines+markers+text",
                 name="Net Margin %",
                 line=dict(color="#10b981", width=3),
-                text=[f"{(m.get('net_margin') if m.get('net_margin') is not None else m.get('net_margin_pct', 0)):.1f}%" for m in margin_trend],
+                text=[_fmt_pct_safe(m.get('net_margin') if m.get('net_margin') is not None else m.get('net_margin_pct')) for m in margin_trend],
                 textposition="bottom center"
             ))
             fig_margin.update_layout(
