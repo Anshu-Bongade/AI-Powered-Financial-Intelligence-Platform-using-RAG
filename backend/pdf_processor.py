@@ -31,13 +31,11 @@ class PDFProcessor:
             separators=["\n## ", "\n### ", "\n\n", "\n", " ", ""]
         )
 
-    def extract_and_index_pdf(self, pdf_path: Path, filename: str) -> Dict[str, Any]:
-        """Process a PDF: extract to markdown, chunk, embed, and store in ChromaDB."""
+    def extract_markdown(self, pdf_path: Path, filename: str) -> Path:
+        """Fast targeted extraction of full text and SEC financial tables to Markdown."""
         stem = Path(filename).stem
         markdown_path = MARKDOWN_DIR / f"{stem}.md"
-        chunks_path = CHUNKS_DIR / f"{stem}_chunks.txt"
 
-        # Step 1: High-speed targeted extraction using PyMuPDF (fitz)
         print(f"[PDFProcessor] Extracting markdown from {pdf_path} using fast PyMuPDF engine...")
         try:
             import fitz
@@ -81,15 +79,28 @@ class PDFProcessor:
                     markdown_text = f"# {filename}\nSEC Annual Report Document."
             else:
                 markdown_text = f"# {filename}\nSEC Annual Report Document."
+
         markdown_path.write_text(markdown_text, encoding="utf-8")
         print(f"[PDFProcessor] Saved markdown to {markdown_path} ({len(markdown_text)} chars)")
+        return markdown_path
 
-        # Step 2: Chunk the Markdown text
-        print("[PDFProcessor] Chunking markdown...")
+    def index_chunks(self, markdown_path: Path, filename: str) -> int:
+        """Chunk markdown text, generate embeddings in batches, and index into ChromaDB."""
+        stem = Path(filename).stem
+        chunks_path = CHUNKS_DIR / f"{stem}_chunks.txt"
+
+        if not markdown_path.exists():
+            print(f"[PDFProcessor] Cannot index chunks: {markdown_path} does not exist.")
+            return 0
+
+        markdown_text = markdown_path.read_text(encoding="utf-8", errors="replace")
+
+        # Chunk the Markdown text
+        print(f"[PDFProcessor] Chunking markdown for {filename}...")
         chunks = self.text_splitter.split_text(markdown_text)
-        print(f"[PDFProcessor] Created {len(chunks)} chunks")
+        print(f"[PDFProcessor] Created {len(chunks)} chunks for {filename}")
 
-        # Step 3: Save chunk file (following existing project format)
+        # Save chunk file
         with chunks_path.open("w", encoding="utf-8") as f:
             for i, chunk in enumerate(chunks, start=1):
                 f.write(f"\n{'=' * 30}\n")
@@ -97,8 +108,8 @@ class PDFProcessor:
                 f.write(f"{'=' * 30}\n")
                 f.write(chunk + "\n")
 
-        # Step 4: Generate embeddings & store in ChromaDB (batched for low RAM)
-        print("[PDFProcessor] Generating embeddings and storing in ChromaDB in batches...")
+        # Generate embeddings & store in ChromaDB (batched for low RAM)
+        print(f"[PDFProcessor] Generating embeddings for {len(chunks)} chunks in ChromaDB...")
         embeddings = []
         if hasattr(self.rag_service, 'embedding_fn') and self.rag_service.embedding_fn is not None:
             batch_size = 32
@@ -145,12 +156,20 @@ class PDFProcessor:
                 metadatas=metadatas
             )
 
-        print(f"[PDFProcessor] Successfully stored {total_chunks} chunks in ChromaDB")
+        print(f"[PDFProcessor] Successfully stored {total_chunks} chunks in ChromaDB for {filename}")
+        return total_chunks
+
+    def extract_and_index_pdf(self, pdf_path: Path, filename: str) -> Dict[str, Any]:
+        """Process a PDF: extract to markdown, chunk, embed, and store in ChromaDB."""
+        stem = Path(filename).stem
+        markdown_path = self.extract_markdown(pdf_path, filename)
+        total_chunks = self.index_chunks(markdown_path, filename)
+        chunks_path = CHUNKS_DIR / f"{stem}_chunks.txt"
 
         return {
             "filename": filename,
             "markdown_path": str(markdown_path),
             "chunks_path": str(chunks_path),
             "total_chunks": total_chunks,
-            "markdown_length": len(markdown_text)
+            "markdown_length": len(markdown_path.read_text(encoding="utf-8", errors="replace")) if markdown_path.exists() else 0
         }

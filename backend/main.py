@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Query
+from fastapi import FastAPI, UploadFile, File, HTTPException, Query, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -211,6 +211,7 @@ def get_financial_dashboard(
 
 @app.post("/api/upload")
 def upload_annual_report(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     force_reprocess: bool = Query(default=False, description="Re-extract even if already cached")
 ):
@@ -250,28 +251,29 @@ def upload_annual_report(
             }
 
         # ── Full processing path ─────────────────────────────────────────────
-        # Step 1: Extract text & tables via PyMuPDF4LLM, chunk, embed → ChromaDB
+        # Step 1: Fast extract text & tables to markdown (3-5 seconds)
         processor = get_pdf_processor()
-        proc_result = processor.extract_and_index_pdf(destination, file.filename)
+        md_path = processor.extract_markdown(destination, file.filename)
 
-        # Step 2: Extract structured financial statements & KPIs with Gemini AI
+        # Step 2: Extract structured financial statements & KPIs with Gemini AI (8-10 seconds)
         extractor = get_financial_extractor()
         raw_financials = extractor.extract_from_markdown(md_path, file.filename, force_refresh=True)
 
-        # Step 3: Run analytics, YoY growth, financial ratios & validations
+        # Step 3: Run analytics, YoY growth, financial ratios & validations (<1 second)
         dashboard_data = FinancialAnalytics.calculate_analytics(raw_financials)
-        collection = get_rag_service().collection
+
+        # Step 4: Schedule vector chunking & ChromaDB embedding in background (zero timeout!)
+        background_tasks.add_task(processor.index_chunks, md_path, file.filename)
 
         return {
             "status": "success",
             "message": (
-                f"Successfully processed '{file.filename}', "
-                f"indexed {proc_result['total_chunks']} chunks into ChromaDB, "
-                f"and generated financial analytics."
+                f"Successfully processed '{file.filename}' and generated financial analytics. "
+                "Document vector indexing is active in the background."
             ),
             "report": dashboard_data,
             "cached": False,
-            "total_collection_chunks": collection.count()
+            "indexing_in_background": True
         }
 
     except Exception as e:

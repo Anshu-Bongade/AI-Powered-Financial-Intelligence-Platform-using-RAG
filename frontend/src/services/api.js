@@ -70,6 +70,7 @@ export async function uploadAnnualReport(file) {
   const res = await fetch(`${API_BASE}/upload`, {
     method: 'POST',
     body: formData,
+    signal: AbortSignal.timeout ? AbortSignal.timeout(90000) : undefined,
   });
 
   return handleResponse(res, 'Upload failed');
