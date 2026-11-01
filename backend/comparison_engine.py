@@ -77,7 +77,7 @@ class CompanyComparisonEngine:
             analytics = FinancialAnalytics.calculate_analytics(raw_data)
             all_analytics.append(analytics)
 
-            latest_year = str(analytics.get("fiscal_years", ["2024"])[0])
+            latest_year = str(analytics.get("kpis", {}).get("latest_year") or analytics.get("fiscal_years", ["2024"])[0])
             company_profiles.append({
                 "id": cid,
                 "name": analytics.get("company_name", cid),

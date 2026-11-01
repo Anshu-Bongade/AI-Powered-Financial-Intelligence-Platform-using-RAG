@@ -219,6 +219,29 @@ with st.sidebar:
         </div>
     """, unsafe_allow_html=True)
 
+    # Main Navigation Radio in Sidebar
+    st.markdown("### 🧭 Platform Views")
+    view_options = [
+        "📊 Executive Financial Dashboard",
+        "⚖️ Multi-Company Benchmark",
+        "🤖 Grounded SEC 10-K RAG AI Chat"
+    ]
+    if "current_view" not in st.session_state:
+        st.session_state.current_view = "📊 Executive Financial Dashboard"
+
+    def on_nav_change():
+        st.session_state.current_view = st.session_state.sidebar_nav_choice
+
+    selected_view = st.radio(
+        "Navigate to:",
+        options=view_options,
+        index=view_options.index(st.session_state.current_view) if st.session_state.current_view in view_options else 0,
+        key="sidebar_nav_choice",
+        on_change=on_nav_change
+    )
+    st.session_state.current_view = selected_view
+    st.markdown("---")
+
     available_docs = get_available_documents()
     doc_options = {d["filename"]: f"{d['title']} ({d['filename']})" for d in available_docs}
     
@@ -330,7 +353,7 @@ with st.sidebar:
 
 
 # ==============================================================================
-# MAIN PAGE HEADER
+# MAIN PAGE HEADER & AUDIT BADGE
 # ==============================================================================
 if not active_analytics:
     st.warning(f"No financial data available for '{selected_filename}'. Please upload or select a valid document.")
@@ -338,9 +361,25 @@ if not active_analytics:
 
 comp_title = active_analytics.get("company_name", "Company")
 doc_title = active_analytics.get("document_title", "Form 10-K")
-years = active_analytics.get("fiscal_years", [2024, 2023, 2022])
-latest_year = str(years[0]) if years else "2024"
-prev_year = str(years[1]) if len(years) > 1 else None
+
+inc_data = active_analytics.get("statements", {}).get("income_statement", {})
+bal_data = active_analytics.get("statements", {}).get("balance_sheet", {})
+cf_data = active_analytics.get("statements", {}).get("cash_flows", {})
+
+# Robust detection of years that have actual financial figures
+raw_years = [str(y) for y in active_analytics.get("fiscal_years", [])]
+data_years = [
+    y for y in raw_years
+    if inc_data.get("total_revenue", {}).get(y) is not None or inc_data.get("net_income", {}).get(y) is not None
+]
+if not data_years:
+    data_years = [y for y, v in inc_data.get("total_revenue", {}).items() if v is not None]
+if not data_years:
+    data_years = raw_years if raw_years else ["2024"]
+
+data_years = sorted(data_years, reverse=True)
+latest_year = data_years[0]
+prev_year = data_years[1] if len(data_years) > 1 else None
 
 col_h1, col_h2 = st.columns([3, 1])
 with col_h1:
@@ -371,21 +410,36 @@ with col_h2:
         </div>
     """, unsafe_allow_html=True)
 
+# ==============================================================================
+# PROMINENT TOP NAVIGATION BAR (High Visibility)
+# ==============================================================================
+nav_c1, nav_c2, nav_c3 = st.columns(3)
+with nav_c1:
+    is_dash = (st.session_state.current_view == "📊 Executive Financial Dashboard")
+    if st.button("📊 Executive Financial Dashboard", use_container_width=True, type="primary" if is_dash else "secondary"):
+        st.session_state.current_view = "📊 Executive Financial Dashboard"
+        st.session_state.sidebar_nav_choice = "📊 Executive Financial Dashboard"
+        st.rerun()
+with nav_c2:
+    is_comp = (st.session_state.current_view == "⚖️ Multi-Company Benchmark")
+    if st.button("⚖️ Multi-Company Benchmark", use_container_width=True, type="primary" if is_comp else "secondary"):
+        st.session_state.current_view = "⚖️ Multi-Company Benchmark"
+        st.session_state.sidebar_nav_choice = "⚖️ Multi-Company Benchmark"
+        st.rerun()
+with nav_c3:
+    is_chat = (st.session_state.current_view == "🤖 Grounded SEC 10-K RAG AI Chat")
+    if st.button("🤖 Grounded SEC 10-K RAG AI Chat", use_container_width=True, type="primary" if is_chat else "secondary"):
+        st.session_state.current_view = "🤖 Grounded SEC 10-K RAG AI Chat"
+        st.session_state.sidebar_nav_choice = "🤖 Grounded SEC 10-K RAG AI Chat"
+        st.rerun()
+
+st.markdown("<hr style='border-color: #1f2937; margin-top: 10px; margin-bottom: 20px;'>", unsafe_allow_html=True)
+
 
 # ==============================================================================
-# MAIN TABS: DASHBOARD | COMPARISON | RAG CHAT
+# VIEW 1: EXECUTIVE FINANCIAL DASHBOARD
 # ==============================================================================
-tab_dash, tab_comp, tab_chat = st.tabs([
-    "📊 Executive Financial Dashboard",
-    "⚖️ Multi-Company Benchmark",
-    "🤖 Grounded SEC 10-K RAG AI Chat"
-])
-
-
-# ==============================================================================
-# TAB 1: EXECUTIVE FINANCIAL DASHBOARD
-# ==============================================================================
-with tab_dash:
+if st.session_state.current_view == "📊 Executive Financial Dashboard":
     kpis = active_analytics.get("kpis", {})
     yoy_growth = active_analytics.get("yoy_growth", {})
     ratios = active_analytics.get("ratios", {}).get(latest_year, {})
@@ -409,11 +463,16 @@ with tab_dash:
             return None
         return f"{val:+.1f}%"
 
-    # Top KPI Metrics Row 1
+    # Top KPI Metrics Row 1 with Robust Fallbacks
     mcol1, mcol2, mcol3, mcol4, mcol5, mcol6 = st.columns(6)
 
-    rev_val = kpis.get("total_revenue", {}).get("value")
-    rev_delta = kpis.get("total_revenue", {}).get("yoy_growth")
+    # 1. Revenue
+    rev_val = kpis.get("revenue", {}).get("value")
+    if rev_val is None:
+        rev_val = kpis.get("total_revenue", {}).get("value")
+    if rev_val is None:
+        rev_val = inc_data.get("total_revenue", {}).get(latest_year)
+    rev_delta = kpis.get("revenue", {}).get("yoy_growth") or yoy_growth.get("revenue", {}).get(latest_year)
     with mcol1:
         st.metric(
             label="Total Revenue",
@@ -421,8 +480,11 @@ with tab_dash:
             delta=fmt_pct(rev_delta)
         )
 
+    # 2. Net Income
     ni_val = kpis.get("net_income", {}).get("value")
-    ni_delta = kpis.get("net_income", {}).get("yoy_growth")
+    if ni_val is None:
+        ni_val = inc_data.get("net_income", {}).get(latest_year)
+    ni_delta = kpis.get("net_income", {}).get("yoy_growth") or yoy_growth.get("net_income", {}).get(latest_year)
     with mcol2:
         st.metric(
             label="Net Income",
@@ -430,7 +492,14 @@ with tab_dash:
             delta=fmt_pct(ni_delta)
         )
 
+    # 3. Gross Margin %
     gm_val = kpis.get("gross_margin_pct", {}).get("value")
+    if gm_val is None:
+        gm_val = p_ratios.get("gross_margin_pct")
+    if gm_val is None and rev_val and rev_val != 0:
+        gm_amt = inc_data.get("gross_margin", {}).get(latest_year)
+        if gm_amt is not None:
+            gm_val = round((gm_amt / rev_val) * 100, 2)
     gm_delta = yoy_growth.get("gross_margin", {}).get(latest_year)
     with mcol3:
         st.metric(
@@ -439,7 +508,14 @@ with tab_dash:
             delta=fmt_pct(gm_delta)
         )
 
+    # 4. Operating Margin %
     om_val = kpis.get("operating_margin_pct", {}).get("value")
+    if om_val is None:
+        om_val = p_ratios.get("operating_margin_pct")
+    if om_val is None and rev_val and rev_val != 0:
+        oi_amt = inc_data.get("operating_income", {}).get(latest_year)
+        if oi_amt is not None:
+            om_val = round((oi_amt / rev_val) * 100, 2)
     om_delta = yoy_growth.get("operating_income", {}).get(latest_year)
     with mcol4:
         st.metric(
@@ -448,8 +524,16 @@ with tab_dash:
             delta=fmt_pct(om_delta)
         )
 
+    # 5. Free Cash Flow
     fcf_val = kpis.get("free_cash_flow", {}).get("value")
-    fcf_delta = kpis.get("free_cash_flow", {}).get("yoy_growth")
+    if fcf_val is None:
+        fcf_val = active_analytics.get("free_cash_flow", {}).get(latest_year)
+    if fcf_val is None:
+        ocf_amt = cf_data.get("operating_cash_flow", {}).get(latest_year)
+        capex_amt = cf_data.get("capex", {}).get(latest_year)
+        if ocf_amt is not None and capex_amt is not None:
+            fcf_val = round(ocf_amt - abs(capex_amt), 2)
+    fcf_delta = kpis.get("free_cash_flow", {}).get("yoy_growth") or yoy_growth.get("free_cash_flow", {}).get(latest_year)
     with mcol5:
         st.metric(
             label="Free Cash Flow",
@@ -457,7 +541,12 @@ with tab_dash:
             delta=fmt_pct(fcf_delta)
         )
 
+    # 6. Return on Equity (ROE) & Current Ratio
     roe_val = p_ratios.get("return_on_equity_roe_pct")
+    if roe_val is None and ni_val and bal_data.get("shareholders_equity", {}).get(latest_year):
+        eq_amt = bal_data.get("shareholders_equity", {}).get(latest_year)
+        if eq_amt and eq_amt != 0:
+            roe_val = round((ni_val / eq_amt) * 100, 2)
     cr_val = s_ratios.get("current_ratio")
     with mcol6:
         st.metric(
@@ -518,29 +607,29 @@ with tab_dash:
             fig_margin = go.Figure()
             fig_margin.add_trace(go.Scatter(
                 x=[f"FY {m['year']}" for m in margin_trend],
-                y=[m.get("gross_margin") for m in margin_trend],
+                y=[(m.get("gross_margin") if m.get("gross_margin") is not None else m.get("gross_margin_pct")) for m in margin_trend],
                 mode="lines+markers+text",
                 name="Gross Margin %",
                 line=dict(color="#3b82f6", width=3),
-                text=[f"{m.get('gross_margin', 0):.1f}%" for m in margin_trend],
+                text=[f"{(m.get('gross_margin') if m.get('gross_margin') is not None else m.get('gross_margin_pct', 0)):.1f}%" for m in margin_trend],
                 textposition="top center"
             ))
             fig_margin.add_trace(go.Scatter(
                 x=[f"FY {m['year']}" for m in margin_trend],
-                y=[m.get("operating_margin") for m in margin_trend],
+                y=[(m.get("operating_margin") if m.get("operating_margin") is not None else m.get("operating_margin_pct")) for m in margin_trend],
                 mode="lines+markers+text",
                 name="Operating Margin %",
                 line=dict(color="#8b5cf6", width=3),
-                text=[f"{m.get('operating_margin', 0):.1f}%" for m in margin_trend],
+                text=[f"{(m.get('operating_margin') if m.get('operating_margin') is not None else m.get('operating_margin_pct', 0)):.1f}%" for m in margin_trend],
                 textposition="top center"
             ))
             fig_margin.add_trace(go.Scatter(
                 x=[f"FY {m['year']}" for m in margin_trend],
-                y=[m.get("net_margin") for m in margin_trend],
+                y=[(m.get("net_margin") if m.get("net_margin") is not None else m.get("net_margin_pct")) for m in margin_trend],
                 mode="lines+markers+text",
                 name="Net Margin %",
                 line=dict(color="#10b981", width=3),
-                text=[f"{m.get('net_margin', 0):.1f}%" for m in margin_trend],
+                text=[f"{(m.get('net_margin') if m.get('net_margin') is not None else m.get('net_margin_pct', 0)):.1f}%" for m in margin_trend],
                 textposition="bottom center"
             ))
             fig_margin.update_layout(
@@ -569,7 +658,7 @@ with tab_dash:
             fig_cf = go.Figure()
             fig_cf.add_trace(go.Bar(
                 x=[f"FY {c['year']}" for c in cf_trend],
-                y=[(c.get("operating_cash_flow") or 0) / 1000 for c in cf_trend],
+                y=[((c.get("operating_cash_flow") or c.get("operating_cf") or 0)) / 1000 for c in cf_trend],
                 name="Operating Cash Flow ($B)",
                 marker_color="#06b6d4"
             ))
@@ -762,9 +851,9 @@ with tab_dash:
 
 
 # ==============================================================================
-# TAB 2: MULTI-COMPANY BENCHMARK & COMPARISON
+# VIEW 2: MULTI-COMPANY BENCHMARK & COMPARISON
 # ==============================================================================
-with tab_comp:
+elif st.session_state.current_view == "⚖️ Multi-Company Benchmark":
     st.markdown("### ⚖️ Cross-Company Comparative Analytics")
     st.caption("Benchmark 2 to 4 companies side-by-side using normalized margins, growth rates, and balance sheet strength.")
 
@@ -947,9 +1036,9 @@ with tab_comp:
 
 
 # ==============================================================================
-# TAB 3: GROUNDED SEC 10-K RAG AI CHAT
+# VIEW 3: GROUNDED SEC 10-K RAG AI CHAT
 # ==============================================================================
-with tab_chat:
+elif st.session_state.current_view == "🤖 Grounded SEC 10-K RAG AI Chat":
     st.markdown("### 🤖 Grounded SEC 10-K Financial Assistant")
     st.caption("Ask questions with guaranteed zero hallucination: queries automatically query verified financial statements and retrieved audited 10-K chunks with citations.")
 

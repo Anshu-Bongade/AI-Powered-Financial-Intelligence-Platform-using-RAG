@@ -279,22 +279,31 @@ class FinancialAnalytics:
         margin_trend = []
         for y in chrono_years:
             r = ratios_by_year.get(y, {}).get("profitability", {})
+            gm_p = r.get("gross_margin_pct")
+            om_p = r.get("operating_margin_pct")
+            nm_p = r.get("net_margin_pct")
             margin_trend.append({
                 "year": y,
-                "gross_margin_pct": r.get("gross_margin_pct"),
-                "operating_margin_pct": r.get("operating_margin_pct"),
-                "net_margin_pct": r.get("net_margin_pct")
+                "gross_margin": gm_p,
+                "gross_margin_pct": gm_p,
+                "operating_margin": om_p,
+                "operating_margin_pct": om_p,
+                "net_margin": nm_p,
+                "net_margin_pct": nm_p
             })
 
         # Cash Flow Waterfall / Bar
         cash_flow_trend = []
         for y in chrono_years:
+            ocf_val = cash.get("operating_cash_flow", {}).get(y)
+            margin_capex = cash.get("capex", {}).get(y)
             cash_flow_trend.append({
                 "year": y,
-                "operating_cf": cash.get("operating_cash_flow", {}).get(y),
+                "operating_cf": ocf_val,
+                "operating_cash_flow": ocf_val,
                 "investing_cf": cash.get("investing_cash_flow", {}).get(y),
                 "financing_cf": cash.get("financing_cash_flow", {}).get(y),
-                "capex": cash.get("capex", {}).get(y),
+                "capex": margin_capex,
                 "free_cash_flow": free_cash_flow_by_year.get(y)
             })
 
@@ -310,14 +319,30 @@ class FinancialAnalytics:
                 "current_liabilities": balance.get("total_current_liabilities", {}).get(y)
             })
 
-        # Latest year KPI Summary Cards
-        latest_year = years[0] if years else "2024"
-        prev_year = years[1] if len(years) > 1 else None
+        # Determine latest reported year with actual financial figures
+        reported_years = [
+            y for y in years 
+            if income.get("total_revenue", {}).get(y) is not None or income.get("net_income", {}).get(y) is not None
+        ]
+        if reported_years:
+            latest_year = reported_years[0]
+            idx = years.index(latest_year)
+            prev_year = years[idx + 1] if idx + 1 < len(years) else None
+        else:
+            latest_year = years[0] if years else "2024"
+            prev_year = years[1] if len(years) > 1 else None
 
         kpis = {
             "latest_year": latest_year,
             "previous_year": prev_year,
             "revenue": {
+                "value": income.get("total_revenue", {}).get(latest_year),
+                "unit": raw_data.get("unit", "millions"),
+                "currency": raw_data.get("currency", "USD"),
+                "yoy_growth": yoy_growth["revenue"].get(latest_year),
+                "label": "Total Net Sales"
+            },
+            "total_revenue": {
                 "value": income.get("total_revenue", {}).get(latest_year),
                 "unit": raw_data.get("unit", "millions"),
                 "currency": raw_data.get("currency", "USD"),
