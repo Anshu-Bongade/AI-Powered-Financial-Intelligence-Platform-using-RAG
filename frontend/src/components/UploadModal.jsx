@@ -11,7 +11,9 @@ import {
   Clock,
   Info,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  FileCheck,
+  Sparkles
 } from 'lucide-react';
 import { uploadAnnualReport } from '../services/api';
 
@@ -93,7 +95,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="relative w-full max-w-lg rounded-2xl bg-slate-950 border border-slate-800 shadow-2xl p-6 overflow-hidden"
+        className="relative w-full max-w-xl rounded-2xl bg-slate-950 border border-slate-800 shadow-2xl p-6 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Glow backdrop */}
@@ -228,6 +230,66 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
               />
             </label>
 
+            {/* Format & Parameter Guidelines Accordion */}
+            <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => setShowGuidelines(!showGuidelines)}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-slate-900/60 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Info className="w-3.5 h-3.5 text-sky-400" />
+                  <span className="font-medium text-slate-200">Filing Guidelines & Required Parameters</span>
+                </div>
+                {showGuidelines ? (
+                  <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+                ) : (
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                )}
+              </button>
+
+              {showGuidelines && (
+                <div className="px-3.5 pb-3.5 pt-1 text-[11px] text-slate-400 space-y-3 border-t border-slate-800/60 max-h-56 overflow-y-auto">
+                  <div>
+                    <h5 className="font-semibold text-slate-200 flex items-center gap-1.5 mb-1">
+                      <FileCheck className="w-3 h-3 text-emerald-400" />
+                      Document Format Requirements
+                    </h5>
+                    <ul className="list-disc list-inside space-y-0.5 text-slate-400">
+                      <li><strong>Digital text-based PDF</strong>: Must contain selectable text (not flattened scanned images or photos).</li>
+                      <li><strong>Standard Filings</strong>: Official SEC Form 10-K, 10-Q, or audited Annual Reports.</li>
+                      <li><strong>Multi-Year Statements</strong>: At least 2–3 consecutive years (e.g. 2024, 2023, 2022) to enable YoY trend calculations.</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h5 className="font-semibold text-slate-200 flex items-center gap-1.5 mb-1">
+                      <Sparkles className="w-3 h-3 text-indigo-400" />
+                      Required Parameters for Full Insights
+                    </h5>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10.5px]">
+                      <div className="p-2 rounded bg-slate-950/60 border border-slate-800/80">
+                        <span className="font-medium text-sky-300">Income Statement:</span>
+                        <p className="text-slate-400 mt-0.5">Total Revenue, Cost of Sales, Gross Margin, R&D, SG&A, Operating Income, Net Income, Diluted EPS.</p>
+                      </div>
+                      <div className="p-2 rounded bg-slate-950/60 border border-slate-800/80">
+                        <span className="font-medium text-emerald-300">Balance Sheet:</span>
+                        <p className="text-slate-400 mt-0.5">Cash & Equivalents, Current Assets, PP&E, Total Assets, Current Liabilities, Debt, Total Liabilities, Equity.</p>
+                      </div>
+                      <div className="p-2 rounded bg-slate-950/60 border border-slate-800/80">
+                        <span className="font-medium text-purple-300">Cash Flow:</span>
+                        <p className="text-slate-400 mt-0.5">Cash from Operating Activities, Capital Expenditures (CapEx) to derive Free Cash Flow.</p>
+                      </div>
+                      <div className="p-2 rounded bg-slate-950/60 border border-slate-800/80">
+                        <span className="font-medium text-amber-300">Report Units & Currency:</span>
+                        <p className="text-slate-400 mt-0.5">Clear notation of units (e.g., "$ in millions", "₹ in Crores") and currency for normalized metrics.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {selectedFile && (
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs">
                 <div className="flex items-center gap-2 text-slate-200">
@@ -252,62 +314,6 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
                 <span>{errorMessage}</span>
               </div>
             )}
-
-            {/* Guidelines Accordion */}
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden text-xs transition-all">
-              <button
-                type="button"
-                onClick={() => setShowGuidelines(!showGuidelines)}
-                className="w-full flex items-center justify-between p-3 text-slate-300 hover:text-white hover:bg-slate-800/40 transition-colors"
-              >
-                <div className="flex items-center gap-2 font-medium">
-                  <Info className="w-4 h-4 text-sky-400 flex-shrink-0" />
-                  <span>Report Format & Parameters Guide</span>
-                </div>
-                {showGuidelines ? (
-                  <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                )}
-              </button>
-
-              {showGuidelines && (
-                <div className="p-3.5 pt-1 border-t border-slate-800/60 space-y-3 text-[11px] text-slate-400 bg-slate-950/60 max-h-56 overflow-y-auto">
-                  <div>
-                    <span className="font-semibold text-slate-200">📄 Recommended Format:</span>
-                    <p className="mt-0.5 text-slate-400 leading-relaxed">
-                      Official SEC Form 10-K, 10-Q, or audited Annual Reports (US-GAAP / IFRS). Must have selectable text (not flattened/scanned image PDFs).
-                    </p>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <span className="font-semibold text-slate-200">📊 Required Parameters for Full KPI & Ratio Insights:</span>
-                    <ul className="space-y-1 pl-1">
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-bold">•</span>
-                        <span><strong className="text-slate-300">Income Statement:</strong> Revenue/Net Sales, Cost of Sales, Gross Margin, Operating Expenses (R&D, SG&A), Operating Income (EBIT), Net Income, Diluted EPS.</span>
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-emerald-400 font-bold">•</span>
-                        <span><strong className="text-slate-300">Balance Sheet:</strong> Total Assets, Current Assets (Cash & Marketable Securities), Total Liabilities, Current Liabilities, Debt, Shareholders' Equity.</span>
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-indigo-400 font-bold">•</span>
-                        <span><strong className="text-slate-300">Cash Flow:</strong> Operating Cash Flow and Capital Expenditures (CapEx) to calculate Free Cash Flow.</span>
-                      </li>
-                      <li className="flex items-start gap-1.5">
-                        <span className="text-amber-400 font-bold">•</span>
-                        <span><strong className="text-slate-300">Comparative Years:</strong> 2 to 3 fiscal years of reported tables enable YoY growth percentages and historical trend charts.</span>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div className="p-2 rounded-lg bg-sky-950/30 border border-sky-800/30 text-sky-300 text-[10.5px] leading-relaxed">
-                    ℹ️ <em>If some statements are missing, FinSight AI will calculate all available metrics, flag missing items in the Validation Audit, and index the entire text into the RAG AI Copilot for narrative Q&A.</em>
-                  </div>
-                </div>
-              )}
-            </div>
 
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
