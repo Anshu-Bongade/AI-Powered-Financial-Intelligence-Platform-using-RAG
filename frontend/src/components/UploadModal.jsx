@@ -8,7 +8,10 @@ import {
   Loader2,
   Database,
   ArrowRight,
-  Clock
+  Clock,
+  Info,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { uploadAnnualReport } from '../services/api';
 
@@ -19,6 +22,7 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [uploadResult, setUploadResult] = useState(null);
   const [elapsedSecs, setElapsedSecs] = useState(0);
+  const [showGuidelines, setShowGuidelines] = useState(false);
 
   if (!isOpen) return null;
 
@@ -248,6 +252,62 @@ export default function UploadModal({ isOpen, onClose, onUploadSuccess }) {
                 <span>{errorMessage}</span>
               </div>
             )}
+
+            {/* Guidelines Accordion */}
+            <div className="rounded-xl border border-slate-800 bg-slate-900/40 overflow-hidden text-xs transition-all">
+              <button
+                type="button"
+                onClick={() => setShowGuidelines(!showGuidelines)}
+                className="w-full flex items-center justify-between p-3 text-slate-300 hover:text-white hover:bg-slate-800/40 transition-colors"
+              >
+                <div className="flex items-center gap-2 font-medium">
+                  <Info className="w-4 h-4 text-sky-400 flex-shrink-0" />
+                  <span>Report Format & Parameters Guide</span>
+                </div>
+                {showGuidelines ? (
+                  <ChevronUp className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                )}
+              </button>
+
+              {showGuidelines && (
+                <div className="p-3.5 pt-1 border-t border-slate-800/60 space-y-3 text-[11px] text-slate-400 bg-slate-950/60 max-h-56 overflow-y-auto">
+                  <div>
+                    <span className="font-semibold text-slate-200">📄 Recommended Format:</span>
+                    <p className="mt-0.5 text-slate-400 leading-relaxed">
+                      Official SEC Form 10-K, 10-Q, or audited Annual Reports (US-GAAP / IFRS). Must have selectable text (not flattened/scanned image PDFs).
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <span className="font-semibold text-slate-200">📊 Required Parameters for Full KPI & Ratio Insights:</span>
+                    <ul className="space-y-1 pl-1">
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-bold">•</span>
+                        <span><strong className="text-slate-300">Income Statement:</strong> Revenue/Net Sales, Cost of Sales, Gross Margin, Operating Expenses (R&D, SG&A), Operating Income (EBIT), Net Income, Diluted EPS.</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-emerald-400 font-bold">•</span>
+                        <span><strong className="text-slate-300">Balance Sheet:</strong> Total Assets, Current Assets (Cash & Marketable Securities), Total Liabilities, Current Liabilities, Debt, Shareholders' Equity.</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-indigo-400 font-bold">•</span>
+                        <span><strong className="text-slate-300">Cash Flow:</strong> Operating Cash Flow and Capital Expenditures (CapEx) to calculate Free Cash Flow.</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="text-amber-400 font-bold">•</span>
+                        <span><strong className="text-slate-300">Comparative Years:</strong> 2 to 3 fiscal years of reported tables enable YoY growth percentages and historical trend charts.</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="p-2 rounded-lg bg-sky-950/30 border border-sky-800/30 text-sky-300 text-[10.5px] leading-relaxed">
+                    ℹ️ <em>If some statements are missing, FinSight AI will calculate all available metrics, flag missing items in the Validation Audit, and index the entire text into the RAG AI Copilot for narrative Q&A.</em>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div className="flex items-center justify-end gap-2 pt-2">
               <button
